@@ -141,6 +141,10 @@
   "footer": {
     "tagline": "Built with love for the people of Dhanana",
     "coords": "28.9353°N, 76.1635°E",
-    "census": "Census Code: 061137"
+    "census": "Census Code: 061137",
+    "made_by": "Made by",
+    "have_photos": "Have photos of Dhanana?",
+    "photo_cta": "We'd love to add them to the archive.",
+    "contact_email": "allendhanana@gmail.com"
   }
 }

@@ -12,7 +12,7 @@ export default function ConnectPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    window.location.href = `mailto:dhananavillage@gmail.com?subject=Message from ${form.name}&body=${encodeURIComponent(
+    window.location.href = `mailto:allendhanana@gmail.com?subject=Message from ${form.name}&body=${encodeURIComponent(
       `Name: ${form.name}\nEmail: ${form.email}\nConnection: ${form.connection}\n\n${form.message}`
     )}`
     setSubmitted(true)
@@ -117,6 +117,16 @@ export default function ConnectPage() {
                     >
                       {t('connect.form_submit')}
                     </button>
+                    <p className="text-center text-xs pt-1" style={{ color: 'rgba(28,28,30,0.45)' }}>
+                      Or email us directly at{' '}
+                      <a
+                        href="mailto:allendhanana@gmail.com"
+                        className="font-medium transition-opacity hover:opacity-80"
+                        style={{ color: '#E8A838' }}
+                      >
+                        allendhanana@gmail.com
+                      </a>
+                    </p>
                   </form>
                 )}
               </div>

@@ -71,6 +71,21 @@ export function Footer() {
                 <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </Link>
+            <div className="pt-2 border-t" style={{ borderColor: 'rgba(253,246,236,0.1)' }}>
+              <p className="text-sm font-medium mb-1" style={{ color: 'rgba(253,246,236,0.85)' }}>
+                {t('footer.have_photos')}
+              </p>
+              <p className="text-xs mb-2" style={{ color: 'rgba(253,246,236,0.6)' }}>
+                {t('footer.photo_cta')}
+              </p>
+              <a
+                href={`mailto:${t('footer.contact_email')}`}
+                className="text-sm font-medium transition-opacity hover:opacity-80"
+                style={{ color: '#E8A838' }}
+              >
+                {t('footer.contact_email')}
+              </a>
+            </div>
           </div>
         </div>
 
@@ -79,7 +94,18 @@ export function Footer() {
           style={{ borderTop: '1px solid rgba(253,246,236,0.15)' }}
         >
           <p className="text-sm" style={{ color: 'rgba(253,246,236,0.6)' }}>{t('footer.tagline')}</p>
-          <p className="text-xs" style={{ color: 'rgba(253,246,236,0.4)' }}>© {new Date().getFullYear()} Dhanana Village</p>
+          <div className="flex items-center gap-4">
+            <p className="text-xs" style={{ color: 'rgba(253,246,236,0.4)' }}>© {new Date().getFullYear()} Dhanana Village</p>
+            <a
+              href="https://allendior.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs transition-opacity hover:opacity-70"
+              style={{ color: 'rgba(253,246,236,0.4)' }}
+            >
+              {t('footer.made_by')} Allendior
+            </a>
+          </div>
         </div>
       </div>
     </footer>
