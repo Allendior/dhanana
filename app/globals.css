@@ -1,26 +1,140 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-saffron: #E8A838;
+  --color-saffron-light: #F5C96A;
+  --color-saffron-dark: #C8881A;
+  --color-terracotta: #C4613A;
+  --color-terracotta-light: #D98060;
+  --color-terracotta-dark: #A04828;
+  --color-wheat: #4A6741;
+  --color-wheat-light: #6A8A60;
+  --color-wheat-dark: #2E4428;
+  --color-cream: #FDF6EC;
+  --color-cream-dark: #F5E8D0;
+  --color-charcoal: #1C1C1E;
+  --color-charcoal-light: #3A3A3C;
+
+  --font-devanagari: 'Tiro Devanagari Hindi', 'Noto Serif Devanagari', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── Grain texture overlay ── */
+@keyframes grain {
+  0%,
+  100% { transform: translate(0, 0) }
+  10%   { transform: translate(-5%, -10%) }
+  20%   { transform: translate(-15%, 5%) }
+  30%   { transform: translate(7%, -25%) }
+  40%   { transform: translate(-5%, 25%) }
+  50%   { transform: translate(-15%, 10%) }
+  60%   { transform: translate(15%, 0%) }
+  70%   { transform: translate(0%, 15%) }
+  80%   { transform: translate(3%, 35%) }
+  90%   { transform: translate(-10%, 10%) }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.grain-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: -200%;
+  width: 400%;
+  height: 400%;
+  z-index: 9999;
+  opacity: 0.032;
+  animation: grain 8s steps(10) infinite;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* ── Animations ── */
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0) }
+  50%       { transform: translateY(8px) }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2s ease-in-out infinite;
+}
+
+/* ── Base ── */
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  background-color: var(--color-cream);
+  color: var(--color-charcoal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-devanagari {
+  font-family: var(--font-devanagari);
+}
+
+/* ── Leaflet overrides ── */
+.leaflet-container {
+  font-family: var(--font-sans) !important;
+  border-radius: 1rem;
+}
+
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar { width: 6px }
+::-webkit-scrollbar-track { background: var(--color-cream-dark) }
+::-webkit-scrollbar-thumb { background: var(--color-saffron); border-radius: 3px }
+
+/* ── Selection ── */
+::selection {
+  background: var(--color-saffron);
+  color: white;
+}
+
+/* ── Focus rings ── */
+:focus-visible {
+  outline: 2px solid var(--color-saffron);
+  outline-offset: 2px;
+}
+
+/* ── Card hover lift ── */
+.card-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px rgba(28,28,30,0.15);
+}
+
+/* ── Temple card glow ── */
+.temple-glow {
+  transition: box-shadow 0.3s ease;
+}
+.temple-glow:hover {
+  box-shadow:
+    0 0 0 1px rgba(232,168,56,0.4),
+    0 8px 32px -8px rgba(232,168,56,0.3);
+}
+
+/* ── Hero gradient text ── */
+.text-gradient-saffron {
+  background: linear-gradient(135deg, #E8A838 0%, #F5C96A 50%, #C4613A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Section divider ── */
+.divider-wheat {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #4A6741 20%, #E8A838 50%, #4A6741 80%, transparent);
+  opacity: 0.3;
+}
+
+/* ── Prose ── */
+.prose-village {
+  line-height: 1.8;
+  font-size: 1.0625rem;
+  color: rgba(28,28,30,0.75);
+  max-width: 65ch;
 }

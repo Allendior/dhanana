@@ -1,0 +1,198 @@
+{
+  "nav": {
+    "history": "History",
+    "demographics": "Demographics",
+    "location": "Location",
+    "governance": "Governance",
+    "culture": "Culture",
+    "gallery": "Gallery",
+    "connect": "Connect"
+  },
+  "home": {
+    "hero": {
+      "title": "धाणा",
+      "subtitle": "Dhanana — Where roots run deep",
+      "scroll": "Scroll to explore"
+    },
+    "stats": {
+      "population": "Population",
+      "founded": "Founded by Dhanna Jaat",
+      "area": "Hectares",
+      "literacy": "Literate"
+    },
+    "about": {
+      "quote": "A village is not just a place — it is a living memory, a shared heartbeat, a home that travels with you wherever you go.",
+      "location": "Located 3 km east of Bhiwani, Haryana"
+    },
+    "sections": {
+      "history": "History & Roots",
+      "historyDesc": "From Dhanna Jaat to modern Dhanana — centuries of stories",
+      "demographics": "Demographics",
+      "demographicsDesc": "Census 2011: 11,766 people, 2,349 households",
+      "culture": "Culture & Heritage",
+      "cultureDesc": "Haryanvi language, handball pride, and deep traditions",
+      "temples": "Sacred Temples",
+      "templesDesc": "9 divine spaces drawing devotees from across the region",
+      "governance": "Governance",
+      "governanceDesc": "Panchayat, schools, hospitals and infrastructure",
+      "connect": "Connect",
+      "connectDesc": "Share your memory, find your people, come home"
+    }
+  },
+  "history": {
+    "title": "History & Roots",
+    "subtitle": "The story of Dhanana begins with a man named Dhanna Jaat",
+    "origin": {
+      "heading": "The Origin Story",
+      "text": "The name Dhanana traces back to its founder, Dhanna Jaat, who established this settlement centuries ago. What began as a single homestead grew into a thriving agricultural community rooted in the fertile plains of Haryana.",
+      "clan": "The Ghanghas Jat clan has been the dominant community since the village's founding — their lineage and legacy woven into every corner of Dhanana."
+    },
+    "timeline": {
+      "founding": "Village founded by Dhanna Jaat",
+      "foundingDesc": "A single settler stakes his claim on the Haryana plains, naming his home after himself.",
+      "ghanghas": "Ghanghas Jat clan establishes roots",
+      "ghanghasDesc": "The Ghanghas become the dominant clan, shaping the village's identity and social structure.",
+      "agriculture": "Agricultural golden age",
+      "agricultureDesc": "Rice fields cover half the land. Millet and cotton fill the rest. Dhanana feeds the region.",
+      "expansion": "Three sub-villages emerge",
+      "expansionDesc": "Dhanana I, II, and III form as farmers begin living in distant fields — Jatai, Sukhpura, and Kuchpad are born.",
+      "modern": "Modern infrastructure arrives",
+      "modernDesc": "Schools, hospitals, markets, and paved roads connect Dhanana to the wider world."
+    },
+    "neighbors": {
+      "heading": "Neighboring Villages",
+      "desc": "Dhanana sits at the heart of a cluster of villages, bound by shared history and geography."
+    }
+  },
+  "demographics": {
+    "title": "Demographics",
+    "subtitle": "A portrait of Dhanana's people — from Census 2011",
+    "population": "Total Population",
+    "households": "Households",
+    "males": "Males",
+    "females": "Females",
+    "children": "Children (0–6 yrs)",
+    "sexRatio": "Sex Ratio",
+    "sexRatioValue": "860 females per 1,000 males",
+    "sexRatioContext": "Haryana state average is 879. This honest statistic reflects a challenge shared across the region — one that Dhanana and Haryana are working to address.",
+    "childSexRatio": "Child Sex Ratio",
+    "childSexRatioValue": "853 girls per 1,000 boys",
+    "literacy": "Literacy",
+    "overallLiteracy": "Overall literacy rate",
+    "maleLiteracy": "Male literacy",
+    "femaleLiteracy": "Female literacy",
+    "charts": {
+      "gender": "Gender Distribution",
+      "literacy": "Literacy Rates",
+      "composition": "Population Composition",
+      "age": "Age Composition"
+    }
+  },
+  "location": {
+    "title": "Location & Map",
+    "subtitle": "Find Dhanana on the map of Haryana",
+    "details": {
+      "pin": "PIN Code",
+      "std": "STD Code",
+      "elevation": "Elevation",
+      "area": "Total Area",
+      "district": "District",
+      "division": "Division",
+      "state": "State"
+    },
+    "reach": {
+      "heading": "How to Reach Dhanana",
+      "bhiwani": "3 km east of Bhiwani (district HQ)",
+      "road": "15 km north on Bhiwani–Jind Road",
+      "railway1": "Bhiwani City Station — 3.7 km",
+      "railway2": "Bhiwani Junction — 4.0 km",
+      "railway3": "Dhana Ladanpur — 6.6 km",
+      "airport": "Indira Gandhi International, Delhi — 107 km",
+      "chandigarh": "Chandigarh (state capital) — 260 km"
+    }
+  },
+  "governance": {
+    "title": "Governance",
+    "subtitle": "How Dhanana is administered and represented",
+    "panchayat": "Gram Panchayat",
+    "panchayatName": "Dhanana-1",
+    "block": "Block Panchayat",
+    "blockName": "Bhiwani",
+    "assembly": "Assembly Constituency",
+    "assemblyName": "Bhiwani",
+    "mla": "MLA",
+    "mlaName": "Ghanshyam Saraf",
+    "parliament": "Parliament Constituency",
+    "parliamentName": "Bhiwani-Mahendragarh",
+    "mp": "MP",
+    "mpName": "Dharambir Singh",
+    "infrastructure": "Infrastructure Highlights",
+    "censusCode": "Census Code: 061137"
+  },
+  "culture": {
+    "title": "Culture & Heritage",
+    "subtitle": "The living soul of Dhanana — language, sport, faith, and harvest",
+    "languages": {
+      "heading": "Languages",
+      "desc": "The people of Dhanana speak Hindi and the proud Haryanvi dialect — a language of warmth, wit, and deep-rooted identity."
+    },
+    "sport": {
+      "heading": "Handball Capital",
+      "desc": "Dhanana has produced national-level handball players. Sport is not just recreation here — it is pride, discipline, and community."
+    },
+    "crops": {
+      "heading": "The Fields of Dhanana",
+      "desc": "Rice covers half the cultivated land. Millet and cotton fill the rest. The agricultural calendar defines the rhythm of life."
+    },
+    "temples": {
+      "heading": "Sacred Temples",
+      "desc": "Nine temples stand in Dhanana, drawing devotees from neighboring villages and as far as Nepal.",
+      "devotees": "Draws devotees from across the region, including Nepal"
+    }
+  },
+  "gallery": {
+    "title": "Gallery",
+    "subtitle": "Dhanana through the lens — a visual journey",
+    "categories": {
+      "all": "All",
+      "village": "Village Life",
+      "agriculture": "Agriculture",
+      "temples": "Temples",
+      "festivals": "Festivals",
+      "people": "People"
+    },
+    "placeholder": "Photo coming soon",
+    "contribute": "Have photos of Dhanana? Share them with us."
+  },
+  "connect": {
+    "title": "Connect",
+    "subtitle": "Are you from Dhanana? We would love to hear from you.",
+    "form": {
+      "name": "Your Name",
+      "email": "Email Address",
+      "message": "Your Message",
+      "connection": "Your Connection to Dhanana",
+      "connectionPlaceholder": "e.g. Born here, family roots, visiting...",
+      "submit": "Send Message",
+      "sending": "Sending...",
+      "success": "Thank you! We'll be in touch.",
+      "error": "Something went wrong. Please try again."
+    },
+    "memory": {
+      "heading": "Share a Memory",
+      "desc": "Tell us a story about Dhanana. A childhood memory, a festival, a face you remember.",
+      "placeholder": "Write your memory here...",
+      "submit": "Share Memory"
+    },
+    "community": {
+      "heading": "Join the Community",
+      "desc": "Connect with other Dhanana families on social media."
+    }
+  },
+  "footer": {
+    "tagline": "Built with love for the people of Dhanana",
+    "coordinates": "28.9353°N, 76.1635°E",
+    "census": "Census Code: 061137",
+    "district": "Bhiwani, Haryana, India"
+  }
+}
