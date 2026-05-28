@@ -22,14 +22,14 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <div className="font-devanagari text-5xl leading-none" style={{ color: '#E8A838' }}>
-              धाणा
+              {t('hero.village_name')}
             </div>
             <p className="text-sm leading-relaxed" style={{ color: 'rgba(253,246,236,0.75)' }}>
               Dhanana village, Bhiwani, Haryana, India
             </p>
             <div className="space-y-1">
-              <p className="text-xs" style={{ color: 'rgba(253,246,236,0.6)' }}>28.9353°N, 76.1635°E</p>
-              <p className="text-xs" style={{ color: 'rgba(253,246,236,0.6)' }}>Census Code: 061137</p>
+              <p className="text-xs" style={{ color: 'rgba(253,246,236,0.6)' }}>{t('footer.coords')}</p>
+              <p className="text-xs" style={{ color: 'rgba(253,246,236,0.6)' }}>{t('footer.census')}</p>
               <p className="text-xs" style={{ color: 'rgba(253,246,236,0.6)' }}>PIN 127031 · Bhiwani District</p>
             </div>
           </div>
@@ -44,7 +44,7 @@ export function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm transition-colors duration-150 hover:text-saffron cursor-pointer"
+                  className="text-sm transition-colors duration-150 cursor-pointer hover:opacity-100"
                   style={{ color: 'rgba(253,246,236,0.8)' }}
                 >
                   {t(link.key)}
@@ -63,10 +63,10 @@ export function Footer() {
             </p>
             <Link
               href="/connect"
-              className="inline-flex items-center gap-2 text-sm font-medium transition-colors duration-150 cursor-pointer"
+              className="inline-flex items-center gap-2 text-sm font-medium cursor-pointer"
               style={{ color: '#E8A838' }}
             >
-              Contribute your story
+              {t('sections.connect')}
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
@@ -74,13 +74,12 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4" style={{ borderTop: '1px solid rgba(253,246,236,0.15)' }}>
-          <p className="text-sm" style={{ color: 'rgba(253,246,236,0.6)' }}>
-            {t('footer.tagline')}
-          </p>
-          <p className="text-xs" style={{ color: 'rgba(253,246,236,0.4)' }}>
-            © {new Date().getFullYear()} Dhanana Village
-          </p>
+        <div
+          className="mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
+          style={{ borderTop: '1px solid rgba(253,246,236,0.15)' }}
+        >
+          <p className="text-sm" style={{ color: 'rgba(253,246,236,0.6)' }}>{t('footer.tagline')}</p>
+          <p className="text-xs" style={{ color: 'rgba(253,246,236,0.4)' }}>© {new Date().getFullYear()} Dhanana Village</p>
         </div>
       </div>
     </footer>

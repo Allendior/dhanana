@@ -12,8 +12,8 @@ const highlightCards = [
         <circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/>
       </svg>
     ),
-    titleKey: 'home.sections.history',
-    descKey: 'home.sections.historyDesc',
+    titleKey: 'sections.history',
+    descKey:  'sections.history_sub',
     color: '#E8A838',
   },
   {
@@ -23,19 +23,19 @@ const highlightCards = [
         <rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/>
       </svg>
     ),
-    titleKey: 'home.sections.demographics',
-    descKey: 'home.sections.demographicsDesc',
+    titleKey: 'sections.demographics',
+    descKey:  'sections.demographics_sub',
     color: '#C4613A',
   },
   {
     href: '/culture',
     icon: (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/>
+        <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
       </svg>
     ),
-    titleKey: 'home.sections.culture',
-    descKey: 'home.sections.cultureDesc',
+    titleKey: 'sections.culture',
+    descKey:  'sections.culture_sub',
     color: '#4A6741',
   },
   {
@@ -45,8 +45,8 @@ const highlightCards = [
         <path d="M3 21h18M3 10h18M5 10V6l7-3 7 3v4M9 21v-5a3 3 0 0 1 6 0v5"/>
       </svg>
     ),
-    titleKey: 'home.sections.temples',
-    descKey: 'home.sections.templesDesc',
+    titleKey: 'culture.temples_title',
+    descKey:  'culture.temples_note',
     color: '#E8A838',
   },
   {
@@ -56,8 +56,8 @@ const highlightCards = [
         <path d="M3 21h18M4 21V8l8-5 8 5v13M9 21v-4a3 3 0 0 1 6 0v4"/>
       </svg>
     ),
-    titleKey: 'home.sections.governance',
-    descKey: 'home.sections.governanceDesc',
+    titleKey: 'sections.governance',
+    descKey:  'sections.governance_sub',
     color: '#C4613A',
   },
   {
@@ -67,17 +67,10 @@ const highlightCards = [
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
     ),
-    titleKey: 'home.sections.connect',
-    descKey: 'home.sections.connectDesc',
+    titleKey: 'sections.connect',
+    descKey:  'sections.connect_sub',
     color: '#4A6741',
   },
-]
-
-const stats = [
-  { value: '11,766', labelKey: 'home.stats.population' },
-  { value: '2,349', labelKey: 'home.stats.founded', raw: 'Dhanna Jaat' },
-  { value: '3,492', labelKey: 'home.stats.area' },
-  { value: '73%', labelKey: 'home.stats.literacy' },
 ]
 
 export default function Home() {
@@ -87,7 +80,6 @@ export default function Home() {
     <>
       {/* ── Hero ── */}
       <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
-        {/* Background image placeholder */}
         <div
           className="absolute inset-0"
           style={{
@@ -96,24 +88,17 @@ export default function Home() {
             backgroundPosition: 'center',
           }}
         />
-        {/* Gradient overlays */}
         <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(28,28,30,0.55) 0%, rgba(28,28,30,0.35) 50%, rgba(28,28,30,0.75) 100%)' }} />
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(232,168,56,0.08) 0%, transparent 70%)' }} />
 
-        {/* Hero content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-32">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-3xl"
-          >
-            {/* Village name — cinematic */}
+          <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }} className="max-w-3xl">
+            {/* Cinematic village name */}
             <motion.h1
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-              className="font-devanagari leading-none mb-6"
+              className="font-devanagari leading-none mb-4"
               style={{
                 fontSize: 'clamp(96px, 18vw, 200px)',
                 color: '#E8A838',
@@ -121,17 +106,27 @@ export default function Home() {
                 letterSpacing: '-0.02em',
               }}
             >
-              {t('home.hero.title')}
+              {t('hero.village_name')}
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-xl sm:text-2xl md:text-3xl font-light tracking-wide mb-4"
-              style={{ color: 'rgba(255,255,255,0.9)', letterSpacing: '0.04em' }}
+              transition={{ duration: 0.8, delay: 0.35 }}
+              className="text-xl sm:text-2xl md:text-3xl font-light mb-3"
+              style={{ color: 'rgba(255,255,255,0.92)', letterSpacing: '0.04em' }}
             >
-              {t('home.hero.subtitle')}
+              {t('hero.tagline')}
+            </motion.p>
+
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="text-base md:text-lg font-light mb-6"
+              style={{ color: 'rgba(255,255,255,0.65)' }}
+            >
+              {t('hero.subtitle')}
             </motion.p>
 
             <motion.p
@@ -139,7 +134,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.7 }}
               className="text-sm tracking-widest uppercase"
-              style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.25em' }}
+              style={{ color: 'rgba(255,255,255,0.4)', letterSpacing: '0.25em' }}
             >
               Bhiwani · Haryana · India
             </motion.p>
@@ -156,14 +151,22 @@ export default function Home() {
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0 md:divide-x divide-white/10">
-              {stats.map((s, i) => (
-                <div key={i} className="text-center md:px-8">
-                  <div className="text-2xl sm:text-3xl font-bold" style={{ color: '#E8A838' }}>{s.value}</div>
-                  <div className="text-xs mt-1 tracking-wider uppercase" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                    {i === 1 ? 'Founded by Dhanna Jaat' : t(s.labelKey)}
-                  </div>
-                </div>
-              ))}
+              <div className="text-center md:px-8">
+                <div className="text-2xl sm:text-3xl font-bold" style={{ color: '#E8A838' }}>11,766</div>
+                <div className="text-xs mt-1 tracking-wider uppercase" style={{ color: 'rgba(255,255,255,0.55)' }}>{t('stats.population')}</div>
+              </div>
+              <div className="text-center md:px-8">
+                <div className="text-sm font-semibold" style={{ color: '#E8A838' }}>{t('stats.founder_name')}</div>
+                <div className="text-xs mt-1 tracking-wider uppercase" style={{ color: 'rgba(255,255,255,0.55)' }}>{t('stats.founded')}</div>
+              </div>
+              <div className="text-center md:px-8">
+                <div className="text-2xl sm:text-3xl font-bold" style={{ color: '#E8A838' }}>3,492</div>
+                <div className="text-xs mt-1 tracking-wider uppercase" style={{ color: 'rgba(255,255,255,0.55)' }}>{t('stats.area')} (ha)</div>
+              </div>
+              <div className="text-center md:px-8">
+                <div className="text-2xl sm:text-3xl font-bold" style={{ color: '#E8A838' }}>73%</div>
+                <div className="text-xs mt-1 tracking-wider uppercase" style={{ color: 'rgba(255,255,255,0.55)' }}>{t('stats.literacy')}</div>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -172,7 +175,7 @@ export default function Home() {
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
           <div className="animate-bounce-slow flex flex-col items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
             <span className="text-[10px] tracking-widest uppercase" style={{ letterSpacing: '0.2em' }}>
-              {t('home.hero.scroll')}
+              {t('hero.scroll')}
             </span>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M8 2v12M4 10l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -181,7 +184,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── About Teaser ── */}
+      {/* ── About teaser ── */}
       <section className="py-20 md:py-32" style={{ background: '#FDF6EC' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
@@ -189,7 +192,7 @@ export default function Home() {
               <blockquote>
                 <div style={{ color: '#E8A838', fontSize: 80, lineHeight: 0.7, fontFamily: 'Georgia, serif', marginBottom: 16 }}>&ldquo;</div>
                 <p className="text-xl md:text-2xl font-light leading-relaxed" style={{ color: '#1C1C1E' }}>
-                  {t('home.about.quote')}
+                  A village is not just a place — it is a living memory, a shared heartbeat, a home that travels with you wherever you go.
                 </p>
               </blockquote>
             </AnimatedSection>
@@ -200,18 +203,19 @@ export default function Home() {
                 style={{ background: 'rgba(232,168,56,0.08)', border: '1px solid rgba(232,168,56,0.2)', minHeight: 240 }}
               >
                 <div className="text-center space-y-3">
-                  <div className="font-devanagari text-4xl" style={{ color: '#E8A838' }}>धाणा</div>
+                  <div className="font-devanagari text-4xl" style={{ color: '#E8A838' }}>{t('hero.village_name')}</div>
                   <div className="text-sm font-medium" style={{ color: '#4A6741' }}>Dhanana Village</div>
                 </div>
                 <div className="divider-wheat w-full" />
                 <div className="space-y-2 text-center">
                   <div className="flex items-center justify-center gap-2 text-sm" style={{ color: 'rgba(28,28,30,0.7)' }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                      <circle cx="12" cy="9" r="2.5"/>
                     </svg>
-                    {t('home.about.location')}
+                    3 km east of Bhiwani, Haryana
                   </div>
-                  <div className="text-xs" style={{ color: 'rgba(28,28,30,0.45)' }}>28.9353°N, 76.1635°E · 216m elevation</div>
+                  <div className="text-xs" style={{ color: 'rgba(28,28,30,0.45)' }}>{t('location.elevation_value')} · {t('location.area_value') ?? '34.92 km²'}</div>
                 </div>
                 <Link
                   href="/location"
@@ -226,19 +230,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Divider ── */}
       <div className="max-w-4xl mx-auto px-8"><div className="divider-wheat" /></div>
 
-      {/* ── Highlight Cards ── */}
+      {/* ── Highlight cards ── */}
       <section className="py-20 md:py-28" style={{ background: '#FDF6EC' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-semibold mb-3" style={{ color: '#1C1C1E' }}>
-              Discover Dhanana
-            </h2>
-            <p className="text-base" style={{ color: 'rgba(28,28,30,0.55)' }}>
-              Every section is a window into our village
-            </p>
+            <h2 className="text-3xl md:text-4xl font-semibold mb-3" style={{ color: '#1C1C1E' }}>Discover Dhanana</h2>
+            <p className="text-base" style={{ color: 'rgba(28,28,30,0.55)' }}>Every section is a window into our village</p>
           </AnimatedSection>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -253,12 +252,8 @@ export default function Home() {
                       {card.icon}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg mb-1.5" style={{ color: '#1C1C1E' }}>
-                        {t(card.titleKey)}
-                      </h3>
-                      <p className="text-sm leading-relaxed" style={{ color: 'rgba(28,28,30,0.6)' }}>
-                        {t(card.descKey)}
-                      </p>
+                      <h3 className="font-semibold text-lg mb-1.5" style={{ color: '#1C1C1E' }}>{t(card.titleKey)}</h3>
+                      <p className="text-sm leading-relaxed" style={{ color: 'rgba(28,28,30,0.6)' }}>{t(card.descKey)}</p>
                     </div>
                     <div className="mt-auto flex items-center gap-1.5 text-sm font-medium" style={{ color: card.color }}>
                       Explore
@@ -278,10 +273,8 @@ export default function Home() {
       <section className="py-20 md:py-28" style={{ background: '#1C1C1E' }}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <AnimatedSection>
-            <div className="font-devanagari text-6xl mb-6" style={{ color: '#E8A838' }}>धाणा</div>
-            <h2 className="text-2xl md:text-3xl font-semibold text-white mb-4">
-              Are you from Dhanana?
-            </h2>
+            <div className="font-devanagari text-6xl mb-6" style={{ color: '#E8A838' }}>{t('hero.village_name')}</div>
+            <h2 className="text-2xl md:text-3xl font-semibold text-white mb-4">{t('connect.from_dhanana')}</h2>
             <p className="text-base leading-relaxed mb-8" style={{ color: 'rgba(255,255,255,0.6)' }}>
               Whether you live in the village today, or your roots trace back to these fields from across the world — you belong here. Share your story, your memories, your pride.
             </p>
@@ -290,7 +283,7 @@ export default function Home() {
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-semibold tracking-wide cursor-pointer transition-all duration-200 hover:scale-105"
               style={{ background: '#E8A838', color: '#fff' }}
             >
-              Connect with us
+              {t('sections.connect')}
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>

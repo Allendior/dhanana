@@ -32,6 +32,7 @@ export function Navbar() {
   useEffect(() => { setMobileOpen(false) }, [pathname])
 
   const isHome = pathname === '/'
+  const solid = scrolled || !isHome
 
   return (
     <>
@@ -41,32 +42,27 @@ export function Navbar() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         style={{
-          background: scrolled
-            ? 'rgba(253,246,236,0.92)'
-            : isHome ? 'transparent' : 'rgba(253,246,236,0.92)',
-          backdropFilter: scrolled || !isHome ? 'blur(16px) saturate(180%)' : 'none',
-          borderBottom: scrolled || !isHome ? '1px solid rgba(232,168,56,0.15)' : 'none',
+          background: solid ? 'rgba(253,246,236,0.92)' : 'transparent',
+          backdropFilter: solid ? 'blur(16px) saturate(180%)' : 'none',
+          borderBottom: solid ? '1px solid rgba(232,168,56,0.15)' : 'none',
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <span
-                className="text-3xl leading-none transition-colors duration-200 font-devanagari"
-                style={{ color: '#E8A838' }}
-              >
-                धाणा
+            <Link href="/" className="flex items-center gap-2.5">
+              <span className="text-3xl leading-none font-devanagari" style={{ color: '#E8A838' }}>
+                {t('hero.village_name')}
               </span>
               <span
                 className="hidden sm:block text-[10px] font-medium tracking-[0.2em] uppercase transition-colors duration-200"
-                style={{ color: scrolled || !isHome ? 'rgba(28,28,30,0.5)' : 'rgba(255,255,255,0.7)' }}
+                style={{ color: solid ? 'rgba(28,28,30,0.5)' : 'rgba(255,255,255,0.7)' }}
               >
                 Dhanana
               </span>
             </Link>
 
-            {/* Desktop nav links */}
+            {/* Desktop nav */}
             <div className="hidden lg:flex items-center gap-1">
               {navLinks.map(link => (
                 <Link
@@ -76,9 +72,7 @@ export function Navbar() {
                   style={{
                     color: pathname === link.href
                       ? '#E8A838'
-                      : scrolled || !isHome
-                        ? 'rgba(28,28,30,0.75)'
-                        : 'rgba(255,255,255,0.88)',
+                      : solid ? 'rgba(28,28,30,0.75)' : 'rgba(255,255,255,0.88)',
                   }}
                 >
                   {t(link.key)}
@@ -98,9 +92,9 @@ export function Navbar() {
               {/* Language toggle */}
               <div
                 className="flex items-center gap-0.5 rounded-full p-0.5"
-                style={{ background: scrolled || !isHome ? 'rgba(28,28,30,0.08)' : 'rgba(255,255,255,0.2)' }}
+                style={{ background: solid ? 'rgba(28,28,30,0.08)' : 'rgba(255,255,255,0.2)' }}
               >
-                {((['en', 'hi', 'hy'] as Language[])).map(l => (
+                {(['en', 'hi', 'hy'] as Language[]).map(l => (
                   <button
                     key={l}
                     onClick={() => setLang(l)}
@@ -109,7 +103,7 @@ export function Navbar() {
                       background: lang === l ? '#E8A838' : 'transparent',
                       color: lang === l
                         ? '#fff'
-                        : scrolled || !isHome ? 'rgba(28,28,30,0.65)' : 'rgba(255,255,255,0.8)',
+                        : solid ? 'rgba(28,28,30,0.65)' : 'rgba(255,255,255,0.8)',
                     }}
                   >
                     {langLabels[l]}
@@ -121,8 +115,8 @@ export function Navbar() {
               <button
                 className="lg:hidden p-2 rounded-lg cursor-pointer"
                 onClick={() => setMobileOpen(v => !v)}
-                aria-label="Toggle menu"
-                style={{ color: scrolled || !isHome ? '#1C1C1E' : '#fff' }}
+                aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+                style={{ color: solid ? '#1C1C1E' : '#fff' }}
               >
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   {mobileOpen ? (
@@ -146,7 +140,11 @@ export function Navbar() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
             className="fixed top-16 left-0 right-0 z-40 lg:hidden"
-            style={{ background: 'rgba(253,246,236,0.97)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(232,168,56,0.15)' }}
+            style={{
+              background: 'rgba(253,246,236,0.97)',
+              backdropFilter: 'blur(16px)',
+              borderBottom: '1px solid rgba(232,168,56,0.15)',
+            }}
           >
             <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
               {navLinks.map(link => (

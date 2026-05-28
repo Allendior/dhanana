@@ -8,23 +8,28 @@ import { AnimatedSection } from '@/components/AnimatedSection'
 type Category = 'all' | 'village' | 'agriculture' | 'temples' | 'festivals' | 'people'
 
 const photos = [
-  { category: 'village',      w: 800, h: 600,  label: 'Village Square' },
-  { category: 'agriculture',  w: 1200, h: 800, label: 'Rice Fields at Dawn' },
-  { category: 'temples',      w: 800, h: 1000, label: 'Khatu Syam Mandir' },
-  { category: 'village',      w: 1000, h: 700, label: 'Village Street' },
-  { category: 'festivals',    w: 1200, h: 800, label: 'Harvest Festival' },
-  { category: 'people',       w: 800, h: 1000, label: 'Elder of the Village' },
-  { category: 'agriculture',  w: 1000, h: 700, label: 'Cotton Harvest' },
-  { category: 'temples',      w: 800, h: 600,  label: 'Goga Mandir' },
-  { category: 'people',       w: 800, h: 800,  label: 'Village Youth' },
-  { category: 'festivals',    w: 1200, h: 700, label: 'Cultural Performance' },
-  { category: 'village',      w: 800, h: 600,  label: 'Evening Light' },
-  { category: 'agriculture',  w: 1000, h: 600, label: 'Millet Fields' },
+  { category: 'village',     w: 800,  h: 600,  label: 'Village Square' },
+  { category: 'agriculture', w: 1200, h: 800,  label: 'Rice Fields at Dawn' },
+  { category: 'temples',     w: 800,  h: 1000, label: 'Khatu Syam Mandir' },
+  { category: 'village',     w: 1000, h: 700,  label: 'Village Street' },
+  { category: 'festivals',   w: 1200, h: 800,  label: 'Harvest Festival' },
+  { category: 'people',      w: 800,  h: 1000, label: 'Elder of the Village' },
+  { category: 'agriculture', w: 1000, h: 700,  label: 'Cotton Harvest' },
+  { category: 'temples',     w: 800,  h: 600,  label: 'Goga Mandir' },
+  { category: 'people',      w: 800,  h: 800,  label: 'Village Youth' },
+  { category: 'festivals',   w: 1200, h: 700,  label: 'Cultural Performance' },
+  { category: 'village',     w: 800,  h: 600,  label: 'Evening Light' },
+  { category: 'agriculture', w: 1000, h: 600,  label: 'Millet Fields' },
 ]
 
 const catColors: Record<Category, string> = {
   all: '#E8A838', village: '#4A6741', agriculture: '#E8A838',
   temples: '#C4613A', festivals: '#4A6741', people: '#C4613A',
+}
+
+const catLabels: Record<Category, string> = {
+  all: 'All', village: 'Village Life', agriculture: 'Agriculture',
+  temples: 'Temples', festivals: 'Festivals', people: 'People',
 }
 
 export default function GalleryPage() {
@@ -36,7 +41,7 @@ export default function GalleryPage() {
   const filtered = active === 'all' ? photos : photos.filter(p => p.category === active)
 
   const slides = filtered.map(p => ({
-    src: `https://placehold.co/${p.w}x${p.h}/4A6741/E8A838?text=${encodeURIComponent(p.label)}`,
+    src: `https://placehold.co/${p.w}x${p.h}/4A6741/FDF6EC?text=${encodeURIComponent(p.label)}`,
     alt: p.label,
   }))
 
@@ -47,15 +52,18 @@ export default function GalleryPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <p className="text-xs font-semibold tracking-[0.3em] uppercase mb-4 text-white/70">Visual Archive</p>
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">{t('gallery.title')}</h1>
-            <p className="text-lg font-light text-white/75">{t('gallery.subtitle')}</p>
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">{t('sections.gallery')}</h1>
+            <p className="text-lg font-light text-white/75">{t('sections.gallery_sub')}</p>
           </AnimatedSection>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-12" style={{ background: 'linear-gradient(to bottom, transparent, #FDF6EC)' }} />
       </section>
 
-      {/* Category filters */}
-      <section className="py-10 sticky top-16 z-30" style={{ background: 'rgba(253,246,236,0.92)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(232,168,56,0.12)' }}>
+      {/* Category filter bar */}
+      <section
+        className="py-4 sticky top-16 z-30"
+        style={{ background: 'rgba(253,246,236,0.92)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(232,168,56,0.12)' }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap gap-2">
             {categories.map(cat => (
@@ -68,7 +76,7 @@ export default function GalleryPage() {
                   color: active === cat ? '#fff' : 'rgba(28,28,30,0.65)',
                 }}
               >
-                {t(`gallery.categories.${cat}`)}
+                {catLabels[cat]}
               </button>
             ))}
           </div>
@@ -93,19 +101,14 @@ export default function GalleryPage() {
                     style={{ aspectRatio: `${photo.w}/${photo.h}` }}
                     loading="lazy"
                   />
-                  {/* Overlay */}
                   <div
                     className="absolute inset-0 flex flex-col justify-end p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     style={{ background: 'linear-gradient(to top, rgba(28,28,30,0.7) 0%, transparent 60%)' }}
                   >
                     <div className="text-white font-medium text-sm">{photo.label}</div>
-                    <div
-                      className="text-xs mt-0.5 capitalize"
-                      style={{ color: catColors[photo.category as Category] }}
-                    >
+                    <div className="text-xs mt-0.5 capitalize" style={{ color: catColors[photo.category as Category] }}>
                       {photo.category}
                     </div>
-                    <div className="text-white/50 text-xs">{t('gallery.placeholder')}</div>
                   </div>
                 </button>
               </AnimatedSection>
@@ -114,35 +117,28 @@ export default function GalleryPage() {
 
           {/* Contribute CTA */}
           <AnimatedSection className="mt-16 text-center">
-            <div
-              className="rounded-3xl p-10 max-w-2xl mx-auto"
-              style={{ background: 'rgba(232,168,56,0.08)', border: '1px solid rgba(232,168,56,0.2)' }}
-            >
-              <div className="text-4xl mb-4">📸</div>
-              <h3 className="font-semibold text-xl mb-3" style={{ color: '#1C1C1E' }}>
-                {t('gallery.contribute')}
-              </h3>
+            <div className="rounded-3xl p-10 max-w-2xl mx-auto" style={{ background: 'rgba(232,168,56,0.08)', border: '1px solid rgba(232,168,56,0.2)' }}>
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ background: 'rgba(232,168,56,0.15)' }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8A838" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21,15 16,10 5,21"/>
+                </svg>
+              </div>
+              <h3 className="font-semibold text-xl mb-3" style={{ color: '#1C1C1E' }}>Have photos of Dhanana?</h3>
               <p className="text-sm mb-6" style={{ color: 'rgba(28,28,30,0.6)' }}>
-                Add your photos to <code className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'rgba(28,28,30,0.06)' }}>/public/images/</code> to make them appear here.
+                {t('sections.connect_sub')} Add photos to{' '}
+                <code className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'rgba(28,28,30,0.06)' }}>/public/images/</code>{' '}
+                to include them here.
               </p>
-              <a
-                href="/connect"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white cursor-pointer"
-                style={{ background: '#E8A838' }}
-              >
-                Contact us to contribute
+              <a href="/connect" className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white cursor-pointer" style={{ background: '#E8A838' }}>
+                Contact us
               </a>
             </div>
           </AnimatedSection>
         </div>
       </section>
 
-      <Lightbox
-        open={lightboxIndex >= 0}
-        index={lightboxIndex}
-        close={() => setLightboxIndex(-1)}
-        slides={slides}
-      />
+      <Lightbox open={lightboxIndex >= 0} index={lightboxIndex} close={() => setLightboxIndex(-1)} slides={slides} />
     </>
   )
 }
