@@ -138,6 +138,18 @@
     "memory_title": "Share a Memory",
     "memory_placeholder": "Write something about Dhanana — a memory, a story, a tradition..."
   },
+  "credits": {
+    "nav": "Credits",
+    "headline": "Made with love",
+    "sub": "Built to give Dhanana a permanent home on the internet.",
+    "creator_label": "Design & Development",
+    "creator_origin": "Born from roots in Dhanana, Bhiwani, Haryana.",
+    "dedicated_to": "Dedicated to the people of Dhanana — past, present, and those yet to come.",
+    "father_line": "For my father, who carries the village with him wherever he goes.",
+    "contribute_title": "Want to contribute?",
+    "contribute_body": "If you have photos, stories, or memories of Dhanana, we'd love to add them to this archive.",
+    "tech_title": "How it's built"
+  },
   "footer": {
     "tagline": "Built with love for the people of Dhanana",
     "coords": "28.9353°N, 76.1635°E",

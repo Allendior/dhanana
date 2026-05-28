@@ -13,6 +13,7 @@ const navLinks = [
   { href: '/culture',      key: 'nav.culture' },
   { href: '/gallery',      key: 'nav.gallery' },
   { href: '/connect',      key: 'nav.connect' },
+  { href: '/credits',      key: 'credits.nav' },
 ]
 
 const langLabels: Record<Language, string> = { en: 'EN', hi: 'हिं', hy: 'ह' }

@@ -96,15 +96,13 @@ export function Footer() {
           <p className="text-sm" style={{ color: 'rgba(253,246,236,0.6)' }}>{t('footer.tagline')}</p>
           <div className="flex items-center gap-4">
             <p className="text-xs" style={{ color: 'rgba(253,246,236,0.4)' }}>© {new Date().getFullYear()} Dhanana Village</p>
-            <a
-              href="https://allendior.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs transition-opacity hover:opacity-70"
-              style={{ color: 'rgba(253,246,236,0.4)' }}
+            <Link
+              href="/credits"
+              className="text-sm font-medium transition-opacity hover:opacity-80"
+              style={{ color: '#E8A838' }}
             >
-              {t('footer.made_by')} Allendior
-            </a>
+              {t('footer.made_by')} Allen Ghanghas →
+            </Link>
           </div>
         </div>
       </div>
