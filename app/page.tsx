@@ -82,11 +82,7 @@ export default function Home() {
       <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
         <div
           className="absolute inset-0"
-          style={{
-            backgroundImage: 'url(https://placehold.co/1920x1080/2E4428/4A6741)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
+          style={{ background: 'linear-gradient(160deg, #1a2a0f 0%, #2C3B1F 40%, #1C2810 100%)' }}
         />
         <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(28,28,30,0.55) 0%, rgba(28,28,30,0.35) 50%, rgba(28,28,30,0.75) 100%)' }} />
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(232,168,56,0.08) 0%, transparent 70%)' }} />

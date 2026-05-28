@@ -131,6 +131,12 @@ body {
   opacity: 0.3;
 }
 
+/* ── Custom cursor ── */
+.custom-cursor-active,
+.custom-cursor-active * {
+  cursor: none !important;
+}
+
 /* ── Prose ── */
 .prose-village {
   line-height: 1.8;

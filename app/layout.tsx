@@ -4,11 +4,12 @@ import { LanguageProvider } from '@/contexts/LanguageContext'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { GrainOverlay } from '@/components/GrainOverlay'
+import { CustomCursor } from '@/components/CustomCursor'
 
 export const metadata: Metadata = {
-  title: 'Dhanana — धाणा | Bhiwani, Haryana',
+  title: 'Dhanana — धनाना | Bhiwani, Haryana',
   description: 'Official website of Dhanana village, Bhiwani district, Haryana, India. Population 11,766 · Founded by Dhanna Jaat · 3,492 hectares.',
-  keywords: ['Dhanana', 'धाणा', 'Bhiwani', 'Haryana', 'village', 'India'],
+  keywords: ['Dhanana', 'धनाना', 'Bhiwani', 'Haryana', 'village', 'India'],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen" style={{ background: '#FDF6EC', color: '#1C1C1E' }}>
         <LanguageProvider>
+          <CustomCursor />
           <GrainOverlay />
           <Navbar />
           <main>{children}</main>

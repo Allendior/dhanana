@@ -72,7 +72,7 @@ export default function DhananaMap() {
       <Marker position={dhananaPos} icon={createSaffronIcon()}>
         <Popup>
           <div style={{ fontFamily: 'Inter, sans-serif', minWidth: 160 }}>
-            <strong style={{ color: '#E8A838', fontSize: 15 }}>धाणा — Dhanana</strong>
+            <strong style={{ color: '#E8A838', fontSize: 15 }}>धनाना — Dhanana</strong>
             <p style={{ margin: '4px 0 0', color: '#666', fontSize: 12 }}>28.9353°N, 76.1635°E</p>
             <p style={{ margin: '2px 0 0', color: '#666', fontSize: 12 }}>PIN: 127031</p>
           </div>
