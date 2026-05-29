@@ -49,7 +49,7 @@ export default function LocationPage() {
       <section className="py-12" style={{ background: '#FDF6EC' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
-            <div className="rounded-3xl overflow-hidden" style={{ height: 520, boxShadow: '0 20px 60px -20px rgba(28,28,30,0.2)' }}>
+            <div className="rounded-3xl overflow-hidden h-[300px] md:h-[520px]" style={{ boxShadow: '0 20px 60px -20px rgba(28,28,30,0.2)' }}>
               <DhananaMap />
             </div>
             <p className="text-xs text-center mt-3" style={{ color: 'rgba(28,28,30,0.4)' }}>
@@ -65,7 +65,7 @@ export default function LocationPage() {
           <AnimatedSection className="mb-10">
             <h2 className="text-3xl font-bold" style={{ color: '#1C1C1E' }}>Location Details</h2>
           </AnimatedSection>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {locationDetails.map((item, i) => (
               <AnimatedSection key={item.label} delay={i * 0.05}>
                 <div className="rounded-2xl p-5 h-full" style={{ background: '#FDF6EC', border: '1px solid rgba(232,168,56,0.15)' }}>
@@ -86,7 +86,7 @@ export default function LocationPage() {
             <div className="divider-wheat max-w-xs mt-3" />
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {howToReach.map((step, i) => (
               <AnimatedSection key={i} delay={i * 0.07}>
                 <div className="relative rounded-2xl p-6 h-full card-lift" style={{ background: '#fff', border: '1px solid rgba(232,168,56,0.15)' }}>

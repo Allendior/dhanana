@@ -1,0 +1,32 @@
+[
+  {
+    "id": "001",
+    "name": "Allen Ghanghas",
+    "anonymous": false,
+    "connection": "Born and raised in Dhanana",
+    "era": "2000s",
+    "memory": "Every summer morning, my grandfather would take me to the anaj mandi before sunrise. The sound of the weighing machines, the smell of fresh bajra, the farmers haggling in Haryanvi — it was a world unto itself. I didn't understand it then. I understand it now.",
+    "date_added": "2026-05-28",
+    "photo": null
+  },
+  {
+    "id": "002",
+    "name": "Sunita Ghanghas",
+    "anonymous": false,
+    "connection": "Family from Dhanana",
+    "era": "1980s",
+    "memory": "The Khatu Syam Mandir on a full moon night — that is a sight I carry with me wherever I go. The bells, the bhajans, the scent of marigold garlands filling the whole chowk. My mother used to say that when you stand inside that mandir, Dhanana holds you. She was right.",
+    "date_added": "2026-05-28",
+    "photo": null
+  },
+  {
+    "id": "003",
+    "name": "Anonymous",
+    "anonymous": true,
+    "connection": "Born and raised in Dhanana",
+    "era": "1970s",
+    "memory": "We used to play kabaddi in the fields after the rice harvest, when the ground was flat and the stubble still golden. Twenty boys, one field, no referee — just the honor of not crossing the line. I have lived in three countries since then. I have never felt as free as I did in that field.",
+    "date_added": "2026-05-28",
+    "photo": null
+  }
+]

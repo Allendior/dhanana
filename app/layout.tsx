@@ -7,9 +7,37 @@ import { GrainOverlay } from '@/components/GrainOverlay'
 import { CustomCursor } from '@/components/CustomCursor'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://dhanana.in'),
   title: 'Dhanana — धनाना | Bhiwani, Haryana',
-  description: 'Official website of Dhanana village, Bhiwani district, Haryana, India. Population 11,766 · Founded by Dhanna Jaat · 3,492 hectares.',
-  keywords: ['Dhanana', 'धनाना', 'Bhiwani', 'Haryana', 'village', 'India'],
+  description: 'Official website of Dhanana village, Bhiwani, Haryana, India. Preserving history, connecting diaspora, celebrating culture.',
+  keywords: 'Dhanana, धनाना, Bhiwani, Haryana, India, village, Ghanghas, Jat',
+  authors: [{ name: 'Allen Ghanghas', url: 'https://allendior.com' }],
+  openGraph: {
+    title: 'Dhanana — धनाना | Bhiwani, Haryana',
+    description: 'Official website of Dhanana village. Preserving history, connecting diaspora, celebrating culture.',
+    url: 'https://dhanana.in',
+    siteName: 'Dhanana',
+    images: [
+      {
+        url: '/og',
+        width: 1200,
+        height: 630,
+        alt: 'Dhanana village — धनाना, Bhiwani, Haryana',
+      },
+    ],
+    locale: 'en_IN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Dhanana — धनाना | Bhiwani, Haryana',
+    description: 'Official website of Dhanana village, Bhiwani, Haryana.',
+    images: ['/og'],
+  },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -22,7 +50,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>" />
       </head>
       <body className="min-h-screen" style={{ background: '#FDF6EC', color: '#1C1C1E' }}>
         <LanguageProvider>

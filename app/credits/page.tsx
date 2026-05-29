@@ -1,4 +1,5 @@
 "use client"
+import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/contexts/LanguageContext'
@@ -55,10 +56,25 @@ export default function CreditsPage() {
               style={{ background: 'rgba(232,168,56,0.08)', border: '1px solid rgba(232,168,56,0.25)' }}
             >
               <div
-                className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center text-2xl font-bold"
-                style={{ background: '#E8A838', color: '#2C3B1F' }}
+                className="mx-auto mb-6 flex-shrink-0"
+                style={{
+                  width: 120,
+                  height: 120,
+                  borderRadius: '50%',
+                  border: '3px solid #E8A838',
+                  boxShadow: '0 0 0 6px rgba(232,168,56,0.12), 0 16px 40px -8px rgba(232,168,56,0.3)',
+                  overflow: 'hidden',
+                  position: 'relative',
+                }}
               >
-                AG
+                <Image
+                  src="/images/allen-ghanghas.jpg"
+                  alt="Allen Ghanghas"
+                  fill
+                  style={{ objectFit: 'cover', objectPosition: 'center top' }}
+                  sizes="120px"
+                  priority
+                />
               </div>
               <div className="text-xs font-semibold tracking-widest uppercase mb-4" style={{ color: 'rgba(232,168,56,0.6)' }}>
                 {t('credits.creator_label')}

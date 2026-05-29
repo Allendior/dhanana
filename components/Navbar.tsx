@@ -12,6 +12,7 @@ const navLinks = [
   { href: '/governance',   key: 'nav.governance' },
   { href: '/culture',      key: 'nav.culture' },
   { href: '/gallery',      key: 'nav.gallery' },
+  { href: '/memories',     key: 'memories.nav' },
   { href: '/connect',      key: 'nav.connect' },
   { href: '/credits',      key: 'credits.nav' },
 ]
@@ -48,6 +49,7 @@ function LanguageDropdown({ solid }: LangDropdownProps) {
   const { lang, setLang } = useLanguage()
   const [open, setOpen] = useState(false)
   const [isDark, setIsDark] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([])
 
@@ -57,6 +59,13 @@ function LanguageDropdown({ solid }: LangDropdownProps) {
     const handler = (e: MediaQueryListEvent) => setIsDark(e.matches)
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)
+  }, [])
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
   }, [])
 
   useEffect(() => {
@@ -94,9 +103,32 @@ function LanguageDropdown({ solid }: LangDropdownProps) {
   const rowHoverBg  = isDark ? '#3A4F2A'  : '#F5ECD8'
   const textColor   = isDark ? '#FDF6EC'  : '#1C1C1E'
 
-  const triggerTextColor = solid
-    ? (isDark ? '#FDF6EC' : '#1C1C1E')
-    : 'rgba(255,255,255,0.95)'
+  const panelStyle = isMobile
+    ? {
+        position: 'fixed' as const,
+        left: 0,
+        right: 0,
+        top: 64,
+        width: '100vw',
+        borderRadius: '0 0 1rem 1rem',
+        background: panelBg,
+        border: `1.5px solid ${panelBorder}`,
+        borderTop: 'none',
+        zIndex: 60,
+        boxShadow: '0 8px 32px -8px rgba(28,28,30,0.2)',
+      }
+    : {
+        position: 'absolute' as const,
+        right: 0,
+        top: '100%',
+        marginTop: 8,
+        minWidth: '220px',
+        borderRadius: '0.75rem',
+        background: panelBg,
+        border: `1.5px solid ${panelBorder}`,
+        zIndex: 60,
+        boxShadow: '0 20px 40px -8px rgba(28,28,30,0.2)',
+      }
 
   return (
     <div ref={dropdownRef} className="relative">
@@ -111,9 +143,10 @@ function LanguageDropdown({ solid }: LangDropdownProps) {
         className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 select-none"
         style={{
           border: '1.5px solid #E8A838',
-          color: triggerTextColor,
-          background: open ? 'rgba(232,168,56,0.1)' : 'transparent',
+          color: '#FDF6EC',
+          background: '#000000',
           boxShadow: open ? '0 0 0 3px rgba(232,168,56,0.18)' : 'none',
+          minHeight: 44,
         }}
       >
         <span className="leading-none">{current.emoji}</span>
@@ -132,19 +165,14 @@ function LanguageDropdown({ solid }: LangDropdownProps) {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -6 }}
-            animate={{ opacity: 1, scale: 1,    y: 0 }}
-            exit={{   opacity: 0, scale: 0.95, y: -6 }}
+            initial={{ opacity: 0, scale: isMobile ? 1 : 0.95, y: -6 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{   opacity: 0, scale: isMobile ? 1 : 0.95, y: -6 }}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
             role="listbox"
             aria-label="Select language"
-            className="absolute right-0 mt-2 w-58 rounded-xl overflow-hidden shadow-2xl"
-            style={{
-              background: panelBg,
-              border: `1.5px solid ${panelBorder}`,
-              minWidth: '220px',
-              zIndex: 60,
-            }}
+            className="overflow-hidden"
+            style={panelStyle}
           >
             <PhulkariStrip />
 
@@ -164,8 +192,11 @@ function LanguageDropdown({ solid }: LangDropdownProps) {
                     onMouseLeave={e => {
                       if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = 'transparent'
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-left cursor-pointer transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-saffron"
+                    className="w-full flex items-center gap-3 px-5 text-left cursor-pointer transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-saffron"
                     style={{
+                      minHeight: 56,
+                      paddingTop: 14,
+                      paddingBottom: 14,
                       background: isActive
                         ? (isDark ? 'rgba(232,168,56,0.12)' : 'rgba(196,97,58,0.07)')
                         : 'transparent',
@@ -228,15 +259,15 @@ export function Navbar() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         style={{
-          background:    solid ? 'rgba(253,246,236,0.92)' : 'transparent',
+          background:     solid ? 'rgba(253,246,236,0.92)' : 'transparent',
           backdropFilter: solid ? 'blur(16px) saturate(180%)' : 'none',
-          borderBottom:  solid ? '1px solid rgba(232,168,56,0.15)' : 'none',
+          borderBottom:   solid ? '1px solid rgba(232,168,56,0.15)' : 'none',
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5">
+            <Link href="/" className="flex items-center gap-2.5 min-h-[44px]">
               <span className="text-3xl leading-none font-devanagari" style={{ color: '#E8A838' }}>
                 {t('hero.village_name')}
               </span>
@@ -280,7 +311,7 @@ export function Navbar() {
 
               {/* Mobile menu button */}
               <button
-                className="lg:hidden p-2 rounded-lg cursor-pointer"
+                className="lg:hidden flex items-center justify-center w-11 h-11 rounded-lg cursor-pointer"
                 onClick={() => setMobileOpen(v => !v)}
                 aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
                 style={{ color: solid ? '#1C1C1E' : '#fff' }}
@@ -305,21 +336,22 @@ export function Navbar() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{   opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
             className="fixed top-16 left-0 right-0 z-40 lg:hidden"
             style={{
-              background:    'rgba(253,246,236,0.97)',
+              background:     'rgba(253,246,236,0.97)',
               backdropFilter: 'blur(16px)',
-              borderBottom:  '1px solid rgba(232,168,56,0.15)',
+              borderBottom:   '1px solid rgba(232,168,56,0.15)',
             }}
           >
-            <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
+            <div className="px-4 py-3 flex flex-col">
               {navLinks.map(link => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="px-4 py-3 rounded-xl text-sm font-medium transition-colors duration-150 cursor-pointer"
+                  className="flex items-center px-4 rounded-xl text-sm font-medium transition-colors duration-150 cursor-pointer"
                   style={{
+                    minHeight: 52,
                     background: pathname === link.href ? 'rgba(232,168,56,0.1)' : 'transparent',
                     color:      pathname === link.href ? '#E8A838' : 'rgba(28,28,30,0.8)',
                   }}

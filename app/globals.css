@@ -58,8 +58,14 @@
 }
 
 /* ── Base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
@@ -68,6 +74,8 @@ body {
   color: var(--color-charcoal);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 .font-devanagari {
@@ -102,8 +110,20 @@ body {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .card-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -12px rgba(28,28,30,0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px -10px rgba(28,28,30,0.13);
+}
+
+/* ── Respect reduced-motion preference ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .card-lift:hover {
+    transform: none;
+  }
 }
 
 /* ── Temple card glow ── */

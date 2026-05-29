@@ -126,6 +126,21 @@
     "dadu": "Dadu Dyal Mandir",
     "khatu": "Khatu Syam Mandir"
   },
+  "memories": {
+    "nav": "Memories",
+    "hero_devanagari": "यादें",
+    "hero_sub": "Share a memory of Dhanana. A story, a moment, a person you remember. These stories are what keep a village alive.",
+    "form_name": "Your name",
+    "form_connection": "Your connection to Dhanana",
+    "form_era": "Time period",
+    "form_memory": "Your memory",
+    "form_anonymous": "Display as anonymous",
+    "form_photo": "Add a photo (optional)",
+    "form_submit": "Share Memory →",
+    "success_title": "Thank you.",
+    "success_body": "Your memory has been received and will appear here after a brief review.",
+    "count": "memories shared from across the world"
+  },
   "connect": {
     "title": "Connect with Dhanana",
     "from_dhanana": "Are you from Dhanana?",

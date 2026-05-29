@@ -51,15 +51,19 @@ export default function DemographicsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
-              { title: t('demographics.sex_ratio'),      component: <GenderDonut /> },
+              { title: t('demographics.sex_ratio'),        component: <GenderDonut /> },
               { title: t('demographics.literacy_overall'), component: <LiteracyBar /> },
-              { title: 'Population Composition',          component: <CompositionBar /> },
+              { title: 'Population Composition',           component: <CompositionBar /> },
               { title: 'Age Composition',                  component: <AgeDonut /> },
             ].map(({ title, component }) => (
               <AnimatedSection key={title}>
-                <div className="rounded-2xl p-7" style={{ background: '#FDF6EC', border: '1px solid rgba(232,168,56,0.15)' }}>
+                <div className="rounded-2xl p-5 md:p-7" style={{ background: '#FDF6EC', border: '1px solid rgba(232,168,56,0.15)' }}>
                   <h3 className="font-semibold text-lg mb-6" style={{ color: '#1C1C1E' }}>{title}</h3>
-                  {component}
+                  <div style={{ width: '100%', overflowX: 'auto' }}>
+                    <div style={{ minWidth: 300 }}>
+                      {component}
+                    </div>
+                  </div>
                 </div>
               </AnimatedSection>
             ))}
