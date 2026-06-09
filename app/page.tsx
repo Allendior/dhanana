@@ -452,6 +452,59 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Migrations map teaser ── */}
+      <section className="pb-20 md:pb-28" style={{ background: '#FDF6EC' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection>
+            <Link href="/migrations" className="block group cursor-pointer">
+              <div
+                className="relative rounded-2xl overflow-hidden p-8 md:p-10 transition-shadow duration-300"
+                style={{
+                  background: 'linear-gradient(135deg, #14120C 0%, #1C1C1E 100%)',
+                  border: '1px solid rgba(232,168,56,0.3)',
+                }}
+              >
+                {/* Corner brackets */}
+                {[
+                  { top: 10, left: 10, borderTop: '2px solid #E8A838', borderLeft: '2px solid #E8A838' },
+                  { top: 10, right: 10, borderTop: '2px solid #E8A838', borderRight: '2px solid #E8A838' },
+                  { bottom: 10, left: 10, borderBottom: '2px solid #E8A838', borderLeft: '2px solid #E8A838' },
+                  { bottom: 10, right: 10, borderBottom: '2px solid #E8A838', borderRight: '2px solid #E8A838' },
+                ].map((style, i) => (
+                  <span key={i} aria-hidden="true" className="pointer-events-none absolute w-4 h-4" style={{ ...style, opacity: 0.7 }} />
+                ))}
+
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
+                  <div className="flex-1">
+                    <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: 'rgba(232,168,56,0.6)' }}>
+                      52.49°N 60.19°E → 28.93°N 76.16°E
+                    </p>
+                    <h3 className="text-2xl md:text-3xl font-semibold mb-3" style={{ color: '#E8A838', letterSpacing: '-0.02em' }}>
+                      {t('migrations.teaser_title')}
+                    </h3>
+                    <p className="text-sm md:text-base" style={{ color: 'rgba(245,232,208,0.65)', lineHeight: 1.7 }}>
+                      {t('migrations.teaser_sub')}
+                    </p>
+                  </div>
+                  <div
+                    className="flex items-center gap-2 text-xs font-semibold tracking-[0.15em] uppercase flex-shrink-0"
+                    style={{ color: '#E8A838' }}
+                  >
+                    {t('migrations.teaser_cta')}
+                    <svg
+                      className="transition-transform duration-200 group-hover:translate-x-1.5"
+                      width="14" height="14" viewBox="0 0 14 14" fill="none"
+                    >
+                      <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </AnimatedSection>
+        </div>
+      </section>
+
       {/* ── Diaspora CTA ── */}
       <section className="py-20 md:py-28" style={{ background: '#1C1C1E' }}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">

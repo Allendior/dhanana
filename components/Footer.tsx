@@ -4,6 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext'
 
 const navLinks = [
   { href: '/history',      key: 'nav.history' },
+  { href: '/migrations',   key: 'migrations.nav' },
   { href: '/demographics', key: 'nav.demographics' },
   { href: '/location',     key: 'nav.location' },
   { href: '/governance',   key: 'nav.governance' },
