@@ -20,13 +20,11 @@ export default function LocationPage() {
   ]
 
   const howToReach = [
-    { step: 1, type: 'Road', label: t('location.from_bhiwani'),    color: '#4A6741' },
-    { step: 2, type: 'Road', label: t('location.from_jind_road'),  color: '#4A6741' },
-    { step: 3, type: 'Rail', label: 'Bhiwani City Station — 3.7 km', color: '#C4613A' },
-    { step: 4, type: 'Rail', label: 'Bhiwani Junction — 4.0 km',     color: '#C4613A' },
-    { step: 5, type: 'Rail', label: 'Dhana Ladanpur — 6.6 km',       color: '#C4613A' },
-    { step: 6, type: 'Air',  label: t('location.airport_value'),     color: '#E8A838' },
-    { step: 7, type: 'Road', label: t('location.from_chandigarh'),   color: '#4A6741' },
+    { step: 1, type: 'Road', label: '18 km from Bhiwani city center', color: '#4A6741' },
+    { step: 2, type: 'Rail', label: 'Bhiwani Railway Station — 18 km', color: '#C4613A' },
+    { step: 3, type: 'Rail', label: 'Dhana Ladanpur — 6.6 km',         color: '#C4613A' },
+    { step: 4, type: 'Air',  label: t('location.airport_value'),       color: '#E8A838' },
+    { step: 5, type: 'Road', label: t('location.from_chandigarh'),     color: '#4A6741' },
   ]
 
   return (

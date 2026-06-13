@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From the Steppe to Dhanana — 5,000 Years in Motion</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0F1A;
+    --panel:#101724;
+    --edge:#243246;
+    --ink:#E9EDF2;
+    --muted:#8FA0B3;
+    --amber:#FFB845;
+    --amber-dim:rgba(255,184,69,.35);
+    --cyan:#41E0D0;
+    --terracotta:#E07A5A;
+    --display:"Fraunces", Georgia, serif;
+    --mono:"IBM Plex Mono", ui-monospace, monospace;
+    --body:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:26px 18px 50px}
+
+  header{margin-bottom:18px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--cyan);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--cyan)}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,4.6vw,48px);line-height:1.04;letter-spacing:-.01em}
+  h1 .gold{color:var(--amber)}
+  .sub{color:var(--muted);margin-top:9px;max-width:64ch;font-size:15px}
+
+  /* ---- map + HUD frame ---- */
+  .stage{position:relative;border:1px solid var(--edge);border-radius:8px;overflow:hidden;background:#000}
+  #map{height:min(62vh,620px);min-height:380px;width:100%;background:#0A0F1A}
+  .leaflet-container{font-family:var(--mono)}
+  .leaflet-control-attribution{background:rgba(10,15,26,.7)!important;color:#5E7188!important;font-size:9px!important}
+  .leaflet-control-attribution a{color:#7E93AC!important}
+  .leaflet-control-zoom a{background:var(--panel)!important;color:var(--ink)!important;border-color:var(--edge)!important}
+
+  /* HUD corner brackets */
+  .hud{position:absolute;width:26px;height:26px;border:1.5px solid var(--cyan);opacity:.55;pointer-events:none;z-index:800}
+  .hud.tl{top:10px;left:10px;border-right:none;border-bottom:none}
+  .hud.tr{top:10px;right:10px;border-left:none;border-bottom:none}
+  .hud.bl{bottom:10px;left:10px;border-right:none;border-top:none}
+  .hud.br{bottom:10px;right:10px;border-left:none;border-top:none}
+
+  .hud-readout{
+    position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:810;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--cyan);
+    background:rgba(10,15,26,.78);border:1px solid rgba(65,224,208,.3);
+    padding:6px 14px;border-radius:3px;text-transform:uppercase;white-space:nowrap;
+    backdrop-filter:blur(4px);
+  }
+  .hud-readout b{color:var(--amber);font-weight:600}
+
+  /* glowing route + marker styles injected into leaflet panes */
+  .route-glow{filter:drop-shadow(0 0 6px var(--amber)) drop-shadow(0 0 14px rgba(255,184,69,.35))}
+  .site-pin{position:relative}
+  .site-pin .core{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:9px;height:9px;border-radius:50%;border:1.5px solid #0A0F1A;
+  }
+  .site-pin .ring{
+    position:absolute;left:50%;top:50%;width:9px;height:9px;border-radius:50%;
+    border:1.5px solid currentColor;transform:translate(-50%,-50%);
+    animation:ping 2.4s ease-out infinite;
+  }
+  @keyframes ping{0%{opacity:.8;width:9px;height:9px}80%{opacity:0;width:34px;height:34px}100%{opacity:0;width:34px;height:34px}}
+  .site-pin .tag{
+    position:absolute;left:12px;top:-7px;font-family:var(--mono);font-size:10px;
+    letter-spacing:.05em;color:var(--ink);white-space:nowrap;
+    text-shadow:0 1px 4px #000,0 0 8px #000;
+  }
+  .pin-steppe{color:#8FD0A0}.pin-steppe .core{background:#8FD0A0}
+  .pin-bmac{color:var(--cyan)}.pin-bmac .core{background:var(--cyan)}
+  .pin-ivc{color:var(--terracotta)}.pin-ivc .core{background:var(--terracotta)}
+  .pin-vedic{color:var(--amber)}.pin-vedic .core{background:var(--amber)}
+  .pin-home{color:#FFFFFF}.pin-home .core{background:#fff;box-shadow:0 0 10px var(--amber),0 0 22px var(--amber)}
+  .pin-home .tag{color:var(--amber);font-weight:600;font-size:11px}
+  .head-dot{
+    width:12px;height:12px;border-radius:50%;background:var(--amber);
+    box-shadow:0 0 8px var(--amber),0 0 20px var(--amber);
+    transform:translate(-50%,-50%);position:absolute;left:50%;top:50%;
+  }
+
+  /* ---- timeline controls ---- */
+  .timeline{margin-top:16px}
+  .scrub-row{display:flex;align-items:center;gap:14px}
+  .playbtn{
+    flex:none;width:44px;height:44px;border-radius:50%;
+    border:1px solid var(--amber);background:transparent;color:var(--amber);
+    font-size:15px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;
+  }
+  .playbtn:hover,.playbtn:focus-visible{background:var(--amber);color:#0A0F1A;outline:none;box-shadow:0 0 18px var(--amber-dim)}
+  input[type=range]{
+    flex:1;appearance:none;-webkit-appearance:none;height:3px;border-radius:2px;
+    background:linear-gradient(to right,var(--amber) var(--fill,0%),var(--edge) var(--fill,0%));cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--amber);
+    border:3px solid var(--bg);box-shadow:0 0 0 1.5px var(--amber),0 0 12px var(--amber-dim);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:14px;height:14px;border-radius:50%;background:var(--amber);
+    border:3px solid var(--bg);box-shadow:0 0 0 1.5px var(--amber);
+  }
+  .era-tabs{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:13px}
+  .era-tab{
+    border:1px solid var(--edge);background:transparent;color:var(--muted);
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;padding:9px 3px;
+    border-radius:4px;cursor:pointer;text-align:center;transition:.2s;line-height:1.45;
+  }
+  .era-tab small{display:block;font-size:8.5px;opacity:.65;letter-spacing:.08em}
+  .era-tab:hover{border-color:var(--amber);color:var(--ink)}
+  .era-tab.active{border-color:var(--amber);background:rgba(255,184,69,.1);color:var(--amber);box-shadow:0 0 14px rgba(255,184,69,.12)}
+  .era-tab.home-tab.active{border-color:var(--cyan);color:var(--cyan);background:rgba(65,224,208,.08)}
+  .era-tab:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+
+  /* ---- info panel ---- */
+  .info{
+    margin-top:16px;background:var(--panel);border:1px solid var(--edge);
+    border-radius:8px;padding:22px 24px;min-height:160px;position:relative;overflow:hidden;
+  }
+  .info::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--amber);opacity:.8}
+  .info.home-era::before{background:var(--cyan)}
+  .info .dates{font-family:var(--mono);font-size:12px;color:var(--amber);letter-spacing:.18em;text-transform:uppercase}
+  .info.home-era .dates{color:var(--cyan)}
+  .info h2{font-family:var(--display);font-weight:500;font-size:clamp(20px,2.8vw,27px);margin:7px 0 9px}
+  .info p{color:#C2CBD6;font-size:15px;max-width:78ch}
+  .info .fade{animation:fadein .45s ease}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .cta{
+    display:inline-flex;align-items:center;gap:8px;margin-top:14px;
+    font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:#0A0F1A;background:var(--amber);padding:10px 18px;border-radius:4px;
+    text-decoration:none;transition:.2s;
+  }
+  .cta:hover{box-shadow:0 0 22px var(--amber-dim);transform:translateY(-1px)}
+
+  .legend{
+    margin-top:14px;display:flex;gap:16px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:10px;color:var(--muted);
+  }
+  .legend span{display:flex;align-items:center;gap:6px}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+  footer{margin-top:22px;color:var(--muted);font-size:12.5px;max-width:84ch;border-top:1px solid var(--edge);padding-top:14px}
+  footer em{color:#AEB9C6}
+
+  @media (prefers-reduced-motion: reduce){
+    .site-pin .ring{animation:none;opacity:0}
+    .info .fade{animation:none}
+  }
+  @media (max-width:680px){
+    .era-tabs{grid-template-columns:repeat(4,1fr)}
+    .hud-readout{font-size:9px;padding:5px 10px}
+    .info{padding:18px 16px}
+    #map{height:56vh}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">dhanana.in · heritage atlas</div>
+    <h1>From the Steppe to <span class="gold">Dhanana</span></h1>
+    <p class="sub">Five thousand years of movement, traced on real geography — from the Eurasian
+    grasslands, across the Hindu Kush, into the Land of Seven Rivers, and home to one village in
+    Bhiwani, Haryana. Press play, or scrub through time.</p>
+  </header>
+
+  <div class="stage">
+    <div id="map"></div>
+    <div class="hud tl"></div><div class="hud tr"></div><div class="hud bl"></div><div class="hud br"></div>
+    <div class="hud-readout" id="readout">CHAPTER <b>1</b> / 7 · <b>C. 3300 BCE</b></div>
+  </div>
+
+  <div class="legend">
+    <span><i class="dot" style="background:var(--amber)"></i>migration route</span>
+    <span><i class="dot" style="background:#8FD0A0"></i>steppe cultures</span>
+    <span><i class="dot" style="background:var(--cyan)"></i>BMAC oasis towns</span>
+    <span><i class="dot" style="background:var(--terracotta)"></i>Harappan cities</span>
+    <span><i class="dot" style="background:var(--amber)"></i>early Vedic sites</span>
+    <span><i class="dot" style="background:#fff;box-shadow:0 0 6px var(--amber)"></i>Dhanana</span>
+  </div>
+
+  <div class="timeline">
+    <div class="scrub-row">
+      <button class="playbtn" id="play" aria-label="Play timeline">▶</button>
+      <input type="range" id="scrub" min="0" max="6" step="1" value="0" aria-label="Timeline era selector">
+    </div>
+    <div class="era-tabs" id="tabs"></div>
+  </div>
+
+  <div class="info" id="info" aria-live="polite"></div>
+
+  <footer>
+    Routes follow the mainstream <em>steppe hypothesis</em>, supported by historical linguistics, archaeology,
+    and ancient-DNA studies (Narasimhan et&nbsp;al., <em>Science</em>, 2019). Dates are approximate and debated;
+    alternative views, including the Indigenous Aryans position, exist. Routes are schematic corridors, not
+    literal roads. Basemap © OpenStreetMap contributors, © CARTO.
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------- data ---------------- */
+  // Real coordinates [lat, lng]
+  const PTS = {
+    yamnayaWest:[47.2, 39.5], samara:[51.0, 49.5], lowerVolga:[48.6, 45.6],
+    uralGate:[51.4, 56.5], sintashta:[52.49, 60.19], arkaim:[52.65, 59.57],
+    kazakh1:[50.5, 66.0], kazakh2:[48.2, 72.5],
+    syrDarya:[44.0, 65.5], gonur:[38.207, 62.041], bactra:[36.758, 66.899],
+    hinduKush:[35.30, 69.00], swat:[34.77, 72.36],
+    punjab:[31.5, 73.8], harappa:[30.628, 72.864], mohenjo:[27.329, 68.139],
+    kurukshetra:[29.969, 76.878], rakhigarhi:[29.293, 76.114],
+    mitathal:[28.890, 76.170], hastinapura:[29.160, 78.020],
+    ganga:[26.45, 80.35], dhanana:[28.9353, 76.1635]
+  };
+
+  const ERAS = [
+    { tab:"Yamnaya", tabDates:"3300–2600", dates:"c. 3300 – 2600 BCE", date:"C. 3300 BCE",
+      title:"The Yamnaya horizon",
+      body:"On the Pontic–Caspian steppe — today's southern Russia and Ukraine — mobile pastoralists of the Yamnaya culture, likely speakers of Proto-Indo-European, master the horse and the ox-drawn wagon. Their kurgan burial mounds spread across the grasslands toward the Volga and the Urals.",
+      route:[PTS.yamnayaWest, PTS.lowerVolga, PTS.samara],
+      view:{bounds:[[44,34],[55,58]]},
+      sites:["yamnaya"] },
+    { tab:"Sintashta", tabDates:"2200–1800", dates:"c. 2200 – 1800 BCE", date:"C. 2000 BCE",
+      title:"Sintashta and the chariot",
+      body:"East of the Ural mountains, the Sintashta culture builds fortified circular settlements like Arkaim and buries warriors with the world's earliest spoke-wheeled chariots. Linguists place Proto-Indo-Iranian — the common ancestor of Sanskrit and Avestan — among these communities.",
+      route:[PTS.samara, PTS.uralGate, PTS.sintashta],
+      view:{bounds:[[48,52],[56,66]]},
+      sites:["sintashta","arkaim"] },
+    { tab:"Andronovo", tabDates:"2000–1500", dates:"c. 2000 – 1500 BCE", date:"C. 1800 BCE",
+      title:"The Andronovo expansion",
+      body:"Sintashta's descendants spread across the Kazakh steppe as the vast Andronovo horizon — herders, miners, and bronze-workers. One stream pushes east toward the Altai; another drifts south past the Syr Darya toward the oasis world of Central Asia, carrying Indo-Iranian speech with it.",
+      route:[[PTS.sintashta[0],PTS.sintashta[1]], PTS.kazakh1, PTS.kazakh2],
+      route2:[PTS.sintashta, [48.5,61.5], PTS.syrDarya],
+      view:{bounds:[[42,54],[55,78]]},
+      sites:[] },
+    { tab:"BMAC", tabDates:"2000–1600", dates:"c. 2000 – 1600 BCE", date:"C. 1800 BCE",
+      title:"Contact at the oases",
+      body:"Steppe groups mingle with the urban Bactria–Margiana civilisation (BMAC) at oasis towns like Gonur Depe in today's Turkmenistan. Vedic Sanskrit absorbs loanwords for bricks, camels and irrigation here. Far to the south, the great Indus cities are already fading around 1900 BCE as rivers shift and trade contracts.",
+      route:[PTS.syrDarya, [41.0,63.5], PTS.gonur, PTS.bactra],
+      view:{bounds:[[33,56],[45,72]]},
+      sites:["gonur","bactra","mohenjo","harappa","rakhigarhi","mitathal"] },
+    { tab:"Punjab", tabDates:"1500–1200", dates:"c. 1500 – 1200 BCE", date:"C. 1400 BCE",
+      title:"Into the Sapta Sindhu",
+      body:"Indo-Aryan clans cross the Hindu Kush — leaving traces in the Swat valley's Gandhara grave culture — and settle the Land of Seven Rivers, the Punjab. Here, among post-Harappan villages, the oldest hymns of the Rigveda are composed, praising Indra, Agni, and the river Sarasvatī.",
+      route:[PTS.bactra, PTS.hinduKush, PTS.swat, PTS.punjab],
+      view:{bounds:[[26,64],[37,79]]},
+      sites:["swat"] },
+    { tab:"Kuru realm", tabDates:"1200–600", dates:"c. 1200 – 600 BCE", date:"C. 1000 BCE",
+      title:"The Kuru realm and the Ganges",
+      body:"The centre of gravity shifts southeast into Kurukṣetra and the Haryana plain — heartland of the Kuru kingdom and the Painted Grey Ware culture, where the later Vedas are compiled and the Mahābhārata's memory is set. From there, iron and rice farming carry the Vedic world down the Ganga.",
+      route:[PTS.punjab, PTS.kurukshetra, PTS.hastinapura, PTS.ganga],
+      view:{bounds:[[25.5,73],[31.5,82]]},
+      sites:["kurukshetra","hastinapura"] },
+    { tab:"◆ Dhanana", tabDates:"today", dates:"Then — and now", date:"TODAY", home:true,
+      title:"Home: Dhanana, Bhiwani",
+      body:"The story lands here. Dhanana sits in the heart of the old Kuru country, on the dry plain the Rigveda once called the Sarasvatī's. Mitathal, a Harappan-era settlement, lies in the very next village; Rakhigarhi — the largest Indus Valley city ever found, and source of the famous ancient-DNA studies — is just up the road. Five thousand years of this map run through one patch of Haryana soil.",
+      route:[PTS.kurukshetra, PTS.rakhigarhi, PTS.dhanana],
+      view:{center:PTS.dhanana, zoom:12},
+      sites:["dhanana"],
+      cta:{href:"https://dhanana.in", label:"Explore the village → dhanana.in"} }
+  ];
+
+  const SITES = {
+    yamnaya:{ll:[48.6,45.6],cls:"pin-steppe",label:"Yamnaya kurgans"},
+    sintashta:{ll:PTS.sintashta,cls:"pin-steppe",label:"Sintashta"},
+    arkaim:{ll:PTS.arkaim,cls:"pin-steppe",label:"Arkaim"},
+    gonur:{ll:PTS.gonur,cls:"pin-bmac",label:"Gonur Depe"},
+    bactra:{ll:PTS.bactra,cls:"pin-bmac",label:"Bactra (Balkh)"},
+    mohenjo:{ll:PTS.mohenjo,cls:"pin-ivc",label:"Mohenjo-daro"},
+    harappa:{ll:PTS.harappa,cls:"pin-ivc",label:"Harappa"},
+    rakhigarhi:{ll:PTS.rakhigarhi,cls:"pin-ivc",label:"Rakhigarhi"},
+    mitathal:{ll:PTS.mitathal,cls:"pin-ivc",label:"Mitathal"},
+    swat:{ll:PTS.swat,cls:"pin-vedic",label:"Swat valley"},
+    kurukshetra:{ll:PTS.kurukshetra,cls:"pin-vedic",label:"Kurukṣetra"},
+    hastinapura:{ll:PTS.hastinapura,cls:"pin-vedic",label:"Hastināpura"},
+    dhanana:{ll:PTS.dhanana,cls:"pin-home",label:"DHANANA ◆"}
+  };
+
+  /* ---------------- map ---------------- */
+  const map = L.map('map',{
+    zoomControl:true, attributionControl:true,
+    worldCopyJump:false, minZoom:3, maxZoom:16,
+    zoomSnap:.25, scrollWheelZoom:false
+  }).setView([42,62],4);
+  map.on('focus click',()=>map.scrollWheelZoom.enable());
+  map.on('blur',()=>map.scrollWheelZoom.disable());
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains:'abcd', maxZoom:19
+  }).addTo(map);
+
+  /* ---------------- helpers ---------------- */
+  // Catmull-Rom spline through waypoints -> dense smooth path
+  function spline(way, per=36){
+    if (way.length<2) return way.slice();
+    const p = [way[0], ...way, way[way.length-1]];
+    const out = [];
+    for (let i=0;i<p.length-3;i++){
+      const [p0,p1,p2,p3]=[p[i],p[i+1],p[i+2],p[i+3]];
+      for (let j=0;j<per;j++){
+        const t=j/per, t2=t*t, t3=t2*t;
+        out.push([
+          .5*((2*p1[0])+(-p0[0]+p2[0])*t+(2*p0[0]-5*p1[0]+4*p2[0]-p3[0])*t2+(-p0[0]+3*p1[0]-3*p2[0]+p3[0])*t3),
+          .5*((2*p1[1])+(-p0[1]+p2[1])*t+(2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*t2+(-p0[1]+3*p1[1]-3*p2[1]+p3[1])*t3)
+        ]);
+      }
+    }
+    out.push(way[way.length-1]);
+    return out;
+  }
+
+  function makePin(site){
+    return L.marker(site.ll,{
+      icon:L.divIcon({className:'', html:
+        `<div class="site-pin ${site.cls}"><span class="ring"></span><span class="core"></span><span class="tag">${site.label}</span></div>`,
+        iconSize:[0,0]}),
+      interactive:false, keyboard:false
+    });
+  }
+
+  // Pre-build route layers per era (glow underlay + bright line)
+  const layers = ERAS.map(e=>{
+    const mk = pts => ({
+      pts,
+      glow:L.polyline([], {color:'#FFB845',weight:7,opacity:.18,interactive:false}),
+      line:L.polyline([], {color:'#FFB845',weight:2.6,opacity:1,interactive:false,className:'route-glow'})
+    });
+    const r=[mk(spline(e.route))];
+    if (e.route2) r.push(mk(spline(e.route2)));
+    return r;
+  });
+  const sitePins = {}; // built lazily
+
+  const head = L.marker([0,0],{icon:L.divIcon({className:'',html:'<div class="head-dot"></div>',iconSize:[0,0]}),interactive:false});
+
+  /* ---------------- UI refs ---------------- */
+  const scrub=document.getElementById('scrub'), tabs=document.getElementById('tabs'),
+        info=document.getElementById('info'), playBtn=document.getElementById('play'),
+        readout=document.getElementById('readout');
+
+  ERAS.forEach((e,i)=>{
+    const b=document.createElement('button');
+    b.className='era-tab'+(e.home?' home-tab':'');
+    b.innerHTML=`${e.tab}<small>${e.tabDates}${e.home?'':' BCE'}</small>`;
+    b.setAttribute('aria-label',`Chapter ${i+1}: ${e.title}`);
+    b.addEventListener('click',()=>{stopPlay();setEra(i);});
+    tabs.appendChild(b);
+  });
+
+  /* ---------------- era engine ---------------- */
+  let current=-1, playTimer=null, raf=null, drawToken=0;
+
+  function showSites(uptoEra){
+    ERAS.forEach((e,ei)=>e.sites.forEach(k=>{
+      if(!sitePins[k]) sitePins[k]=makePin(SITES[k]);
+      if (ei<=uptoEra){ if(!map.hasLayer(sitePins[k])) sitePins[k].addTo(map); }
+      else { if(map.hasLayer(sitePins[k])) map.removeLayer(sitePins[k]); }
+    }));
+  }
+
+  function drawRoutes(i){
+    drawToken++; const token=drawToken;
+    cancelAnimationFrame(raf);
+    layers.forEach((group,gi)=>group.forEach(r=>{
+      [r.glow,r.line].forEach(l=>{ if(!map.hasLayer(l)) l.addTo(map); });
+      if (gi<i){ r.glow.setLatLngs(r.pts); r.line.setLatLngs(r.pts); r.line.setStyle({opacity:.45}); r.glow.setStyle({opacity:.08}); }
+      else if (gi>i){ r.glow.setLatLngs([]); r.line.setLatLngs([]); }
+      else { r.line.setStyle({opacity:1}); r.glow.setStyle({opacity:.18}); }
+    }));
+    const active = layers[i];
+    if (reduceMotion){
+      active.forEach(r=>{r.glow.setLatLngs(r.pts);r.line.setLatLngs(r.pts);});
+      return;
+    }
+    // animate all routes of this era in parallel
+    active.forEach(r=>{r.glow.setLatLngs([]);r.line.setLatLngs([]);});
+    head.addTo(map);
+    const dur=2200, t0=performance.now();
+    function step(now){
+      if (token!==drawToken) return;
+      const t=Math.min((now-t0)/dur,1), ease=1-Math.pow(1-t,3);
+      active.forEach(r=>{
+        const k=Math.max(2,Math.floor(r.pts.length*ease));
+        const slice=r.pts.slice(0,k);
+        r.glow.setLatLngs(slice); r.line.setLatLngs(slice);
+      });
+      const main=active[0], hk=Math.max(1,Math.floor(main.pts.length*ease)-1);
+      head.setLatLng(main.pts[hk]);
+      if (t<1) raf=requestAnimationFrame(step);
+      else setTimeout(()=>{ if(token===drawToken && map.hasLayer(head)) map.removeLayer(head); },500);
+    }
+    raf=requestAnimationFrame(step);
+  }
+
+  function flyToEra(e){
+    const opts={duration:reduceMotion?0:1.6,easeLinearity:.22};
+    if (e.view.bounds) map.flyToBounds(e.view.bounds,{...opts,padding:[24,24]});
+    else map.flyTo(e.view.center,e.view.zoom,opts);
+  }
+
+  function setEra(i){
+    if (i===current) return;
+    current=i;
+    const e=ERAS[i];
+    flyToEra(e);
+    drawRoutes(i);
+    showSites(i);
+
+    scrub.value=i; scrub.style.setProperty('--fill',(i/6*100)+'%');
+    [...tabs.children].forEach((b,bi)=>b.classList.toggle('active',bi===i));
+    readout.innerHTML=`CHAPTER <b>${i+1}</b> / 7 · <b>${e.date}</b>`;
+    info.classList.toggle('home-era',!!e.home);
+    info.innerHTML=`<div class="fade">
+      <div class="dates">${e.dates} · chapter ${i+1} of 7</div>
+      <h2>${e.title}</h2><p>${e.body}</p>
+      ${e.cta?`<a class="cta" href="${e.cta.href}" target="_blank" rel="noopener">${e.cta.label}</a>`:''}
+    </div>`;
+  }
+
+  scrub.addEventListener('input',()=>{stopPlay();setEra(+scrub.value);});
+
+  function stopPlay(){
+    if(playTimer){clearInterval(playTimer);playTimer=null;playBtn.textContent='▶';playBtn.setAttribute('aria-label','Play timeline');}
+  }
+  playBtn.addEventListener('click',()=>{
+    if(playTimer){stopPlay();return;}
+    playBtn.textContent='❚❚';playBtn.setAttribute('aria-label','Pause timeline');
+    if(current>=6) current=-1;
+    setEra(current<0?0:current);
+    playTimer=setInterval(()=>{ if(current>=6){stopPlay();return;} setEra(current+1); },5200);
+  });
+
+  setEra(0);
+})();
+</script>
+</body>
+</html>
