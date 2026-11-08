@@ -5,7 +5,7 @@ import { AnimatedSection } from '@/components/AnimatedSection'
 
 export default function ConnectPage() {
   const { t } = useLanguage()
-  const [form, setForm] = useState({ name: '', email: '', connection: '', message: '', website: '' })
+  const [form, setForm] = useState({ name: '', email: '', connection: '', message: '', website: '', form_started_at: Date.now() })
   const [submitted, setSubmitted] = useState(false)
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
@@ -29,12 +29,12 @@ export default function ConnectPage() {
       const res = await fetch('/api/submit-contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, form_started_at: form.form_started_at || Date.now() }),
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(data.error || 'Failed to send')
       setSubmitted(true)
-      setForm({ name: '', email: '', connection: '', message: '', website: '' })
+      setForm({ name: '', email: '', connection: '', message: '', website: '', form_started_at: Date.now() })
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     } finally {
@@ -59,6 +59,7 @@ export default function ConnectPage() {
       fd.append('email', memoryForm.email.trim())
       fd.append('anonymous', memoryForm.name.trim() ? 'false' : 'true')
       fd.append('website', memoryForm.website)
+      fd.append('form_started_at', String(Date.now() - 3000))
       const res = await fetch('/api/submit-memory', { method: 'POST', body: fd })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(data.error || 'Failed to send')

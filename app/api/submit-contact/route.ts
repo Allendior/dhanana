@@ -2,15 +2,18 @@ import { Resend } from 'resend'
 import {
   adminInbox,
   clampText,
-  clientIp,
+  corsHeaders,
   escHtml,
+  formTimingBad,
   honeypotTripped,
   isValidEmail,
   json,
   rateLimit,
+  rateLimitKey,
+  rejectOversizeJson,
   requireResendKey,
   resendFrom,
-  corsHeaders,
+  safeSubject,
 } from '@/lib/form-security'
 
 export const runtime = 'nodejs'
@@ -20,8 +23,10 @@ export async function OPTIONS(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const ip = clientIp(request)
-  const limited = rateLimit(`contact:${ip}`, 8, 60 * 60 * 1000)
+  const oversized = rejectOversizeJson(request)
+  if (oversized) return oversized
+
+  const limited = rateLimit(rateLimitKey(request, 'contact'), 6, 60 * 60 * 1000)
   if (!limited.ok) {
     return json(
       { error: 'Too many messages. Please try again later.' },
@@ -44,6 +49,7 @@ export async function POST(request: Request) {
     let connection = ''
     let message = ''
     let honey = ''
+    let startedAt: unknown = ''
 
     if (contentType.includes('application/json')) {
       const body = await request.json()
@@ -52,6 +58,7 @@ export async function POST(request: Request) {
       connection = clampText(body.connection, 200)
       message = clampText(body.message, 5000)
       honey = clampText(body.website || body.company, 200)
+      startedAt = body.form_started_at
     } else {
       const formData = await request.formData()
       name = clampText(formData.get('name'), 120)
@@ -59,10 +66,14 @@ export async function POST(request: Request) {
       connection = clampText(formData.get('connection'), 200)
       message = clampText(formData.get('message'), 5000)
       honey = clampText(formData.get('website') || formData.get('company'), 200)
+      startedAt = formData.get('form_started_at')
     }
 
     if (honeypotTripped(honey)) {
       return json({ success: true }, 200, request)
+    }
+    if (formTimingBad(startedAt)) {
+      return json({ error: 'Please try again.' }, 400, request)
     }
 
     if (!name || !email || !message) {
@@ -73,6 +84,16 @@ export async function POST(request: Request) {
     }
     if (message.length < 10) {
       return json({ error: 'Message is too short.' }, 400, request)
+    }
+
+    const emailLimited = rateLimit(rateLimitKey(request, 'contact-email', email), 4, 60 * 60 * 1000)
+    if (!emailLimited.ok) {
+      return json(
+        { error: 'Too many messages. Please try again later.' },
+        429,
+        request,
+        { 'Retry-After': String(emailLimited.retryAfterSec) },
+      )
     }
 
     const resend = new Resend(apiKey)
@@ -96,7 +117,7 @@ export async function POST(request: Request) {
       from,
       to,
       replyTo: email,
-      subject: `Connect — ${name}`.slice(0, 200),
+      subject: safeSubject(`Connect — ${name}`),
       html,
     })
 

@@ -2,15 +2,21 @@ import { Resend } from 'resend'
 import {
   adminInbox,
   clampText,
-  clientIp,
+  corsHeaders,
+  detectImageExt,
   escHtml,
+  formTimingBad,
   honeypotTripped,
   isValidEmail,
   json,
   rateLimit,
+  rateLimitKey,
+  rejectOversizeMultipart,
   requireResendKey,
   resendFrom,
-  corsHeaders,
+  safeAttachmentName,
+  safeSubject,
+  visitorConfirmationEnabled,
 } from '@/lib/form-security'
 
 export const runtime = 'nodejs'
@@ -20,8 +26,10 @@ export async function OPTIONS(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const ip = clientIp(request)
-  const limited = rateLimit(`memory:${ip}`, 6, 60 * 60 * 1000)
+  const oversized = rejectOversizeMultipart(request)
+  if (oversized) return oversized
+
+  const limited = rateLimit(rateLimitKey(request, 'memory'), 5, 60 * 60 * 1000)
   if (!limited.ok) {
     return json(
       { error: 'Too many submissions. Please try again later.' },
@@ -43,6 +51,9 @@ export async function POST(request: Request) {
     if (honeypotTripped(formData.get('website') || formData.get('company'))) {
       return json({ success: true }, 200, request)
     }
+    if (formTimingBad(formData.get('form_started_at'))) {
+      return json({ error: 'Please try again.' }, 400, request)
+    }
 
     const name = clampText(formData.get('name'), 120)
     const connection = clampText(formData.get('connection'), 120)
@@ -62,20 +73,32 @@ export async function POST(request: Request) {
       return json({ error: 'Invalid email address' }, 400, request)
     }
 
+    if (emailRaw) {
+      const emailLimited = rateLimit(rateLimitKey(request, 'memory-email', emailRaw), 3, 60 * 60 * 1000)
+      if (!emailLimited.ok) {
+        return json(
+          { error: 'Too many submissions. Please try again later.' },
+          429,
+          request,
+          { 'Retry-After': String(emailLimited.retryAfterSec) },
+        )
+      }
+    }
+
     const attachments: { filename: string; content: Buffer }[] = []
     let hasPhoto = false
     if (photo && typeof photo === 'object' && 'size' in photo && photo.size > 0) {
       if (photo.size > 5 * 1024 * 1024) {
         return json({ error: 'Photo must be under 5MB' }, 400, request)
       }
-      const type = (photo.type || '').toLowerCase()
-      if (type && !['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(type)) {
-        return json({ error: 'Photo must be JPG, PNG, WebP, or GIF' }, 400, request)
+      const buf = Buffer.from(await photo.arrayBuffer())
+      const ext = detectImageExt(buf)
+      if (!ext) {
+        return json({ error: 'Photo must be a real JPG, PNG, WebP, or GIF file' }, 400, request)
       }
-      const safeName = (photo.name || 'photo.jpg').replace(/[^\w.\-]+/g, '_').slice(0, 80)
       attachments.push({
-        filename: safeName || 'photo.jpg',
-        content: Buffer.from(await photo.arrayBuffer()),
+        filename: safeAttachmentName(photo.name || 'photo', ext),
+        content: buf,
       })
       hasPhoto = true
     }
@@ -114,7 +137,7 @@ export async function POST(request: Request) {
     <div class="row"><span class="label">Era</span><span class="value">${escHtml(era || 'Not specified')}</span></div>
     <div class="row"><span class="label">Email</span><span class="value">${emailRaw ? escHtml(emailRaw) : 'Not provided'}</span></div>
     <div class="row"><span class="label">Display as</span><span class="value">${anonymous ? 'Anonymous' : 'Their real name'}</span></div>
-    <div class="row"><span class="label">Photo attached</span><span class="value">${hasPhoto ? 'Yes' : 'No'}</span></div>
+    <div class="row"><span class="label">Photo attached</span><span class="value">${hasPhoto ? 'Yes (magic-byte checked)' : 'No'}</span></div>
     <div class="memory-block">${escHtml(memory)}</div>
   </div>
   <div class="action">
@@ -129,7 +152,7 @@ export async function POST(request: Request) {
     const adminResult = await resend.emails.send({
       from,
       to,
-      subject: `New Memory — Dhanana | ${name}`.slice(0, 200),
+      subject: safeSubject(`New Memory — Dhanana | ${name}`),
       html: adminHtml,
       attachments,
       ...(emailRaw ? { replyTo: emailRaw } : {}),
@@ -140,7 +163,7 @@ export async function POST(request: Request) {
       return json({ error: 'Failed to send. Please try again.' }, 500, request)
     }
 
-    if (emailRaw) {
+    if (emailRaw && visitorConfirmationEnabled()) {
       const confirmHtml = `
 <!DOCTYPE html>
 <html>
@@ -166,27 +189,23 @@ export async function POST(request: Request) {
     <p>Thank you, <strong>${escHtml(name)}</strong>.<br>
     Your memory of Dhanana has been received.</p>
     <div class="memory-preview">${escHtml(memory.length > 200 ? memory.slice(0, 200) + '…' : memory)}</div>
-    <p style="font-size:13px">It will appear on the Memory Wall after a brief review.<br>
-    We're grateful you shared a piece of Dhanana with us.</p>
+    <p style="font-size:13px">It will appear on the Memory Wall after a brief review.</p>
     <a href="https://dhanana.in/memories" class="link">Visit the Memory Wall →</a>
   </div>
-  <div class="footer">dhanana.in · Built with love for the people of Dhanana</div>
+  <div class="footer">dhanana.in</div>
 </div>
 </body>
 </html>`
-
       try {
         const conf = await resend.emails.send({
           from,
           to: emailRaw,
-          subject: 'Your memory of Dhanana has been received',
+          subject: safeSubject('Your memory of Dhanana has been received'),
           html: confirmHtml,
         })
-        if (conf.error) {
-          console.warn('Memory confirmation email skipped/failed:', conf.error)
-        }
+        if (conf.error) console.warn('Memory confirmation skipped/failed:', conf.error)
       } catch (confirmErr) {
-        console.warn('Memory confirmation email exception:', confirmErr)
+        console.warn('Memory confirmation exception:', confirmErr)
       }
     }
 
