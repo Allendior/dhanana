@@ -1,49 +1,88 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import {
+  adminInbox,
+  clampText,
+  clientIp,
+  escHtml,
+  honeypotTripped,
+  isValidEmail,
+  json,
+  rateLimit,
+  requireResendKey,
+  resendFrom,
+  corsHeaders,
+} from '@/lib/form-security'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+export const runtime = 'nodejs'
 
-function escHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-    .replace(/\n/g, '<br>')
+export async function OPTIONS(request: Request) {
+  return new Response(null, { status: 204, headers: corsHeaders(request) })
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
+  const ip = clientIp(request)
+  const limited = rateLimit(`memory:${ip}`, 6, 60 * 60 * 1000)
+  if (!limited.ok) {
+    return json(
+      { error: 'Too many submissions. Please try again later.' },
+      429,
+      request,
+      { 'Retry-After': String(limited.retryAfterSec) },
+    )
+  }
+
+  const apiKey = requireResendKey()
+  if (!apiKey) {
+    console.error('RESEND_API_KEY missing')
+    return json({ error: 'Form is temporarily unavailable.' }, 503, request)
+  }
+
   try {
     const formData = await request.formData()
 
-    const name       = (formData.get('name')       as string || '').trim()
-    const connection = (formData.get('connection') as string || '').trim()
-    const era        = (formData.get('era')        as string || '').trim()
-    const memory     = (formData.get('memory')     as string || '').trim()
-    const email      = (formData.get('email')      as string || '').trim()
-    const anonymous  = formData.get('anonymous') === 'true'
-    const photo      = formData.get('photo') as File | null
+    if (honeypotTripped(formData.get('website') || formData.get('company'))) {
+      return json({ success: true }, 200, request)
+    }
+
+    const name = clampText(formData.get('name'), 120)
+    const connection = clampText(formData.get('connection'), 120)
+    const era = clampText(formData.get('era'), 40)
+    const memory = clampText(formData.get('memory'), 8000)
+    const emailRaw = clampText(formData.get('email'), 254)
+    const anonymous = formData.get('anonymous') === 'true'
+    const photo = formData.get('photo') as File | null
 
     if (!name || !connection || !memory) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+      return json({ error: 'Missing required fields' }, 400, request)
     }
     if (memory.length < 50) {
-      return NextResponse.json({ error: 'Memory must be at least 50 characters' }, { status: 400 })
+      return json({ error: 'Memory must be at least 50 characters' }, 400, request)
+    }
+    if (emailRaw && !isValidEmail(emailRaw)) {
+      return json({ error: 'Invalid email address' }, 400, request)
     }
 
     const attachments: { filename: string; content: Buffer }[] = []
     let hasPhoto = false
-    if (photo && photo.size > 0) {
+    if (photo && typeof photo === 'object' && 'size' in photo && photo.size > 0) {
       if (photo.size > 5 * 1024 * 1024) {
-        return NextResponse.json({ error: 'Photo must be under 5MB' }, { status: 400 })
+        return json({ error: 'Photo must be under 5MB' }, 400, request)
       }
+      const type = (photo.type || '').toLowerCase()
+      if (type && !['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(type)) {
+        return json({ error: 'Photo must be JPG, PNG, WebP, or GIF' }, 400, request)
+      }
+      const safeName = (photo.name || 'photo.jpg').replace(/[^\w.\-]+/g, '_').slice(0, 80)
       attachments.push({
-        filename: photo.name || 'photo.jpg',
+        filename: safeName || 'photo.jpg',
         content: Buffer.from(await photo.arrayBuffer()),
       })
       hasPhoto = true
     }
+
+    const resend = new Resend(apiKey)
+    const from = resendFrom('Dhanana Memory Wall')
+    const to = adminInbox('dhanana')
 
     const adminHtml = `
 <!DOCTYPE html>
@@ -55,10 +94,10 @@ export async function POST(request: NextRequest) {
   .header h1 { font-size: 22px; margin: 0 0 4px; color: #E8A838; }
   .header p { font-size: 13px; margin: 0; opacity: 0.65; letter-spacing: 0.05em; }
   .body { padding: 32px 40px; }
-  .row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(28,28,30,0.08); }
+  .row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(28,28,30,0.08); gap: 16px; }
   .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(28,28,30,0.45); }
-  .value { font-size: 14px; font-weight: 600; color: #1C1C1E; text-align: right; max-width: 300px; }
-  .memory-block { background: rgba(232,168,56,0.06); border-left: 3px solid #E8A838; padding: 20px 24px; margin: 24px 0; border-radius: 0 8px 8px 0; font-size: 15px; line-height: 1.75; color: #1C1C1E; }
+  .value { font-size: 14px; font-weight: 600; color: #1C1C1E; text-align: right; max-width: 300px; word-break: break-word; }
+  .memory-block { background: rgba(232,168,56,0.06); border-left: 3px solid #E8A838; padding: 20px 24px; margin: 24px 0; border-radius: 0 8px 8px 0; font-size: 15px; line-height: 1.75; color: #1C1C1E; word-break: break-word; }
   .action { background: #2C3B1F; color: #FDF6EC; padding: 20px 40px; font-size: 13px; line-height: 1.7; }
   .action code { background: rgba(232,168,56,0.2); padding: 2px 6px; border-radius: 4px; color: #E8A838; font-size: 12px; }
   .footer { padding: 16px 40px; text-align: center; font-size: 11px; color: rgba(28,28,30,0.4); }
@@ -73,36 +112,35 @@ export async function POST(request: NextRequest) {
     <div class="row"><span class="label">From</span><span class="value">${escHtml(name)}</span></div>
     <div class="row"><span class="label">Connection</span><span class="value">${escHtml(connection)}</span></div>
     <div class="row"><span class="label">Era</span><span class="value">${escHtml(era || 'Not specified')}</span></div>
-    <div class="row"><span class="label">Email</span><span class="value">${email ? escHtml(email) : 'Not provided'}</span></div>
+    <div class="row"><span class="label">Email</span><span class="value">${emailRaw ? escHtml(emailRaw) : 'Not provided'}</span></div>
     <div class="row"><span class="label">Display as</span><span class="value">${anonymous ? 'Anonymous' : 'Their real name'}</span></div>
-    <div class="row"><span class="label">Photo attached</span><span class="value">${hasPhoto ? 'Yes ✓' : 'No'}</span></div>
+    <div class="row"><span class="label">Photo attached</span><span class="value">${hasPhoto ? 'Yes' : 'No'}</span></div>
     <div class="memory-block">${escHtml(memory)}</div>
   </div>
   <div class="action">
     <strong>To approve and publish this memory:</strong><br>
     Open <code>/data/memories.json</code> and add a new entry, then redeploy.
-    <br><br>
-    Format:<br>
-    <code>{ "id": "XXX", "name": "${escHtml(anonymous ? 'Anonymous' : name)}", "anonymous": ${anonymous}, "connection": "${escHtml(connection)}", "era": "${escHtml(era || '')}", "memory": "...", "date_added": "${new Date().toISOString().split('T')[0]}", "photo": null }</code>
   </div>
   <div class="footer">dhanana.in · Memory Wall</div>
 </div>
 </body>
 </html>`
 
-    await resend.emails.send({
-      // Use your verified domain once set up at resend.com/domains
-      // Replace with: 'Memory Wall <memories@dhanana.in>'
-      from: 'Dhanana Memory Wall <onboarding@resend.dev>',
-      to: 'allendhanana@gmail.com',
-      subject: `New Memory — Dhanana | ${name}`,
+    const adminResult = await resend.emails.send({
+      from,
+      to,
+      subject: `New Memory — Dhanana | ${name}`.slice(0, 200),
       html: adminHtml,
       attachments,
-      ...(email ? { reply_to: email } : {}),
+      ...(emailRaw ? { replyTo: emailRaw } : {}),
     })
 
-    // Confirmation email to submitter
-    if (email) {
+    if (adminResult.error) {
+      console.error('Memory admin email failed:', adminResult.error)
+      return json({ error: 'Failed to send. Please try again.' }, 500, request)
+    }
+
+    if (emailRaw) {
       const confirmHtml = `
 <!DOCTYPE html>
 <html>
@@ -114,7 +152,7 @@ export async function POST(request: NextRequest) {
   .subtitle { color: rgba(253,246,236,0.6); font-size: 13px; letter-spacing: 0.1em; }
   .body { padding: 36px 40px; text-align: center; }
   .body p { font-size: 15px; line-height: 1.8; color: rgba(28,28,30,0.75); }
-  .memory-preview { background: rgba(232,168,56,0.06); border: 1px solid rgba(232,168,56,0.2); border-radius: 12px; padding: 20px 24px; margin: 24px 0; font-style: italic; font-size: 14px; line-height: 1.75; color: #1C1C1E; text-align: left; }
+  .memory-preview { background: rgba(232,168,56,0.06); border: 1px solid rgba(232,168,56,0.2); border-radius: 12px; padding: 20px 24px; margin: 24px 0; font-style: italic; font-size: 14px; line-height: 1.75; color: #1C1C1E; text-align: left; word-break: break-word; }
   .link { display: inline-block; margin-top: 8px; padding: 12px 28px; background: #E8A838; color: #fff; text-decoration: none; border-radius: 32px; font-size: 13px; font-weight: 600; }
   .footer { padding: 20px 40px; text-align: center; font-size: 11px; color: rgba(28,28,30,0.4); border-top: 1px solid rgba(28,28,30,0.06); }
 </style></head>
@@ -137,17 +175,24 @@ export async function POST(request: NextRequest) {
 </body>
 </html>`
 
-      await resend.emails.send({
-        from: 'Dhanana Memory Wall <onboarding@resend.dev>',
-        to: email,
-        subject: 'Your memory of Dhanana has been received',
-        html: confirmHtml,
-      })
+      try {
+        const conf = await resend.emails.send({
+          from,
+          to: emailRaw,
+          subject: 'Your memory of Dhanana has been received',
+          html: confirmHtml,
+        })
+        if (conf.error) {
+          console.warn('Memory confirmation email skipped/failed:', conf.error)
+        }
+      } catch (confirmErr) {
+        console.warn('Memory confirmation email exception:', confirmErr)
+      }
     }
 
-    return NextResponse.json({ success: true })
+    return json({ success: true }, 200, request)
   } catch (err) {
     console.error('Memory submission error:', err)
-    return NextResponse.json({ error: 'Failed to send. Please try again.' }, { status: 500 })
+    return json({ error: 'Failed to send. Please try again.' }, 500, request)
   }
 }
