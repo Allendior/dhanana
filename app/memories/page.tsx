@@ -159,6 +159,9 @@ export default function MemoriesPage() {
       fd.append('memory', form.memory)
       fd.append('email', form.email)
       fd.append('anonymous', String(form.anonymous))
+      // honeypot — must stay empty
+      fd.append('website', '')
+      fd.append('form_started_at', String(Date.now() - 4000))
       if (photoFile) fd.append('photo', photoFile)
 
       const res = await fetch('/api/submit-memory', { method: 'POST', body: fd })
